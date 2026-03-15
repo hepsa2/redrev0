@@ -1,167 +1,660 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>最新文章 · 赤星</title>
+  <meta name="description" content="赤星最新文章列表">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== CSS 变量 ===== */
+    :root {
+      --red:      #b30000;
+      --darkred:  #7a0000;
+      --lightred: #ffd6d6;
+      --gold:     #ffd700;
+    }
 
-<title>最新文章</title>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-<style>
+    body {
+      background: var(--lightred);
+      font-family: 'Noto Sans SC', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
 
-body{
-background:#f7f7f7;
-font-family:"Noto Sans SC",sans-serif;
-margin:0;
-}
+    /* ===== 流星画布 ===== */
+    #meteorCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+    }
 
-.blog-section{
-max-width:1100px;
-margin:80px auto;
-padding:20px;
-}
+    /* ===== 淡色红星背景 ===== */
+    .flag-bg {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 120vw; color: #ffd700; opacity: 0.08;
+      z-index: -1; pointer-events: none; user-select: none; line-height: 1;
+    }
 
-.blog-title{
-font-size:32px;
-color:#8b0000;
-margin-bottom:30px;
-text-align:center;
-}
+    /* ===== 汉堡按钮 ===== */
+    .menu-btn {
+      position: fixed; top: 25px; right: 25px;
+      width: 55px; height: 55px; background: var(--red); border-radius: 10px;
+      display: flex; flex-direction: column; justify-content: center;
+      align-items: center; gap: 6px; cursor: pointer;
+      box-shadow: 0 0 15px rgba(180,0,0,0.5); z-index: 1000;
+      transition: 0.25s;
+    }
+    .menu-btn span { width: 26px; height: 3px; background: white; transition: 0.3s; }
+    .menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(6px,6px); }
+    .menu-btn.active span:nth-child(2) { opacity: 0; }
+    .menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(6px,-6px); }
+    .menu-btn::before {
+      content: "★"; color: var(--gold); position: absolute;
+      top: -12px; right: -12px; font-size: 20px;
+    }
 
-#blog-cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:22px;
-}
+    /* ===== 侧边栏 ===== */
+    .sidebar {
+      position: fixed; top: 0; right: 0; width: 350px; height: 100vh;
+      background: rgba(255,220,220,0.96); padding: 100px 40px;
+      transform: translateX(100%); transition: 0.35s;
+      border-left: 2px solid #900; z-index: 999;
+    }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar a {
+      display: block; margin-bottom: 20px; padding: 14px;
+      background: white; border-radius: 8px;
+      text-decoration: none; color: #222; transition: 0.2s;
+      font-size: 15px;
+    }
+    .sidebar a:hover { background: #ffcccc; }
 
-.blog-card{
-background:white;
-padding:22px;
-border-radius:12px;
-box-shadow:0 10px 30px rgba(0,0,0,0.12);
-transition:0.25s;
-display:flex;
-flex-direction:column;
-justify-content:space-between;
-}
+    /* ===== 主容器 ===== */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 80px 24px 100px;
+    }
 
-.blog-card:hover{
-transform:translateY(-6px);
-box-shadow:0 16px 40px rgba(0,0,0,0.18);
-}
+    /* ===== 页头 ===== */
+    .page-header {
+      text-align: center;
+      margin-bottom: 60px;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.9s cubic-bezier(0.22,1,0.36,1);
+    }
+    .page-header.show { opacity: 1; transform: translateY(0); }
 
-.blog-card h3{
-font-size:18px;
-margin-bottom:10px;
-color:#222;
-}
+    .page-header .star-deco {
+      font-size: 26px; color: var(--gold); letter-spacing: 12px;
+      display: block; margin-bottom: 18px;
+      animation: starGlow 3s ease-in-out infinite;
+    }
+    @keyframes starGlow {
+      0%, 100% { text-shadow: 0 0 8px rgba(255,215,0,0.4); }
+      50%       { text-shadow: 0 0 22px rgba(255,215,0,0.8); }
+    }
 
-.blog-date{
-font-size:13px;
-color:#777;
-margin-bottom:12px;
-}
+    .page-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(28px, 6vw, 58px);
+      color: #8b0000;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
 
-.blog-card a{
-margin-top:auto;
-text-decoration:none;
-color:white;
-background:#b30000;
-padding:8px 14px;
-border-radius:6px;
-font-size:14px;
-align-self:flex-start;
-}
+    .page-subtitle {
+      font-size: 14px;
+      color: var(--darkred);
+      letter-spacing: 0.28em;
+      opacity: 0.7;
+    }
+    .page-subtitle::before,
+    .page-subtitle::after { content: " ★ "; color: var(--red); }
 
-.blog-card a:hover{
-background:#900;
-}
+    /* ===== 装饰分隔线 ===== */
+    .divider {
+      display: flex; align-items: center; gap: 16px;
+      margin: 32px auto 0; max-width: 320px;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, #b30000aa);
+    }
+    .divider::after {
+      background: linear-gradient(90deg, #b30000aa, transparent);
+    }
+    .divider-star { color: var(--gold); font-size: 18px; }
 
-.more-blog{
-display:block;
-text-align:center;
-margin-top:40px;
-font-size:16px;
-text-decoration:none;
-color:#b30000;
-}
+    /* ===== 博客卡片网格 ===== */
+    #blog-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
+      margin-bottom: 60px;
+    }
 
-.more-blog:hover{
-text-decoration:underline;
-}
+    /* 加载中 */
+    .loading-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--darkred);
+      font-size: 15px;
+      letter-spacing: 0.2em;
+      padding: 60px 0;
+      opacity: 0.7;
+    }
+    .loading-msg::before { content: "⟳ "; animation: spin 1.2s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 
-</style>
+    /* 错误提示 */
+    .error-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #8b0000;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      padding: 40px 0;
+      opacity: 0.6;
+    }
+
+    /* ===== 单张博客卡片 ===== */
+    .blog-card {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(179, 0, 0, 0.12);
+      border-radius: 14px;
+      padding: 0;
+      box-shadow:
+        0 8px 32px rgba(120, 0, 0, 0.10),
+        0 2px 8px rgba(0,0,0,0.06);
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.28s ease;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      /* 入场动画 */
+      opacity: 0;
+      transform: translateY(36px);
+      animation: cardIn 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    @keyframes cardIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .blog-card:hover {
+      transform: translateY(-8px) scale(1.012);
+      box-shadow:
+        0 20px 52px rgba(120, 0, 0, 0.18),
+        0 4px 16px rgba(0,0,0,0.10);
+    }
+
+    /* 卡片顶部红色条 */
+    .card-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--darkred), var(--red), var(--gold));
+    }
+
+    /* 卡片正文区 */
+    .card-body {
+      padding: 22px 24px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-index {
+      font-family: 'Orbitron', monospace;
+      font-size: 10px;
+      color: var(--gold);
+      background: var(--darkred);
+      padding: 2px 7px;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+    .card-date {
+      font-size: 12px;
+      color: #999;
+      letter-spacing: 0.1em;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a1a1a;
+      line-height: 1.5;
+      flex-shrink: 0;
+    }
+
+    .card-summary {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.8;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* 卡片底部 */
+    .card-footer {
+      padding: 0 24px 20px;
+    }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: white;
+      background: linear-gradient(135deg, var(--red) 0%, var(--darkred) 100%);
+      padding: 9px 18px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      transition: filter 0.2s, transform 0.2s;
+      box-shadow: 0 3px 12px rgba(120,0,0,0.3);
+    }
+    .card-link::after { content: "→"; font-size: 14px; }
+    .card-link:hover {
+      filter: brightness(1.15);
+      transform: translateX(3px);
+    }
+
+    /* ===== 查看全部按钮 ===== */
+    .more-wrap {
+      text-align: center;
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s 0.3s, transform 0.8s 0.3s;
+    }
+    .more-wrap.show { opacity: 1; transform: translateY(0); }
+
+    .more-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--red);
+      border: 1.5px solid var(--red);
+      padding: 12px 32px;
+      border-radius: 8px;
+      font-size: 15px;
+      letter-spacing: 0.15em;
+      transition: background 0.22s, color 0.22s;
+      background: rgba(255,255,255,0.5);
+    }
+    .more-btn:hover {
+      background: var(--red);
+      color: white;
+    }
+    .more-btn::before { content: "★"; color: var(--gold); font-size: 14px; }
+    .more-btn::after  { content: "★"; color: var(--gold); font-size: 14px; }
+
+    /* ===== AI 悬浮按钮 ===== */
+    #aiBtn {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      width: 62px; height: 62px;
+      background: linear-gradient(135deg, #c0000a 0%, #7a0000 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(140,0,0,0.45), 0 1px 4px rgba(0,0,0,0.18);
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.22s ease;
+      z-index: 9999;
+      animation: aiBtnPulse 3s ease-in-out infinite;
+    }
+    #aiBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 32px rgba(180,0,0,0.55), 0 2px 8px rgba(0,0,0,0.22);
+      animation: none;
+    }
+    #aiBtn::before {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      border: 2px solid rgba(200,0,0,0.4);
+      animation: aiRingPulse 3s ease-in-out infinite;
+    }
+    #aiBtn svg {
+      width: 28px; height: 28px;
+      fill: none; stroke: #fff;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      position: relative; z-index: 1;
+    }
+    #aiBtn::after {
+      content: '★';
+      position: absolute; top: -5px; right: -3px;
+      font-size: 13px; color: var(--gold); line-height: 1;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+      animation: starSpin 6s linear infinite;
+    }
+    @keyframes aiBtnPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(140,0,0,0.45), 0 1px 4px rgba(0,0,0,0.18); }
+      50%       { box-shadow: 0 4px 30px rgba(190,0,0,0.65), 0 1px 4px rgba(0,0,0,0.18); }
+    }
+    @keyframes aiRingPulse {
+      0%   { transform: scale(1);   opacity: 0.7; }
+      60%  { transform: scale(1.18); opacity: 0; }
+      100% { transform: scale(1);   opacity: 0; }
+    }
+    @keyframes starSpin {
+      0%   { transform: rotate(0deg)   scale(1); }
+      50%  { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; }
+      .flag-bg  { font-size: 150vw; }
+      #blog-cards { grid-template-columns: 1fr; }
+      #aiBtn { width: 54px; height: 54px; bottom: 20px; right: 20px; }
+      #aiBtn svg { width: 24px; height: 24px; }
+    }
+  </style>
 </head>
-
 <body>
 
-<section class="blog-section">
+  <!-- 流星画布 -->
+  <canvas id="meteorCanvas"></canvas>
 
-<h2 class="blog-title">最新文章</h2>
+  <!-- 背景金星 -->
+  <div class="flag-bg">★</div>
 
-<div id="blog-cards">
-加载中...
-</div>
+  <!-- 汉堡菜单 -->
+  <div class="menu-btn" id="menuBtn">
+    <span></span><span></span><span></span>
+  </div>
 
-<a href="https://paper.wf/meteor" class="more-blog" target="_blank">
-查看全部文章 →
-</a>
+  <!-- 侧边栏 -->
+  <div class="sidebar" id="sidebar">
+    <a href="jieshao.html">关于我们</a>
+    <a href="blog.html">文章查看</a>
+    <a href="network.html">网安知识</a>
+    <a href="download.html">文件下载</a>
+    <a href="wenw/about.html">公示板块</a>
+  </div>
 
-</section>
+  <!-- 主内容 -->
+  <div class="container">
 
-<script>
+    <!-- 页头 -->
+    <header class="page-header" id="pageHeader">
+      <span class="star-deco">★ ★ ★</span>
+      <h1 class="page-title">最新文章</h1>
+      <p class="page-subtitle">来自赤星的理论与记录</p>
+      <div class="divider"><span class="divider-star">★</span></div>
+    </header>
 
-const feedURL = "https://paper.wf/meteor/feed/";
+    <!-- 卡片网格 -->
+    <div id="blog-cards">
+      <div class="loading-msg">文章加载中</div>
+    </div>
 
-fetch(feedURL)
+    <!-- 查看全部 -->
+    <div class="more-wrap" id="moreWrap">
+      <a href="https://paper.wf/meteor" class="more-btn" target="_blank">
+        查看全部文章
+      </a>
+    </div>
 
-.then(response => response.text())
+  </div><!-- /container -->
 
-.then(str => new DOMParser().parseFromString(str,"text/xml"))
+  <!-- AI 悬浮按钮 -->
+  <div id="aiBtn" title="打开 AI 对话">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3C7.03 3 3 6.69 3 11.2c0 2.4 1.1 4.57 2.88 6.1L5 21l3.9-1.72A10.1 10.1 0 0012 19.4c4.97 0 9-3.69 9-8.2S16.97 3 12 3z"/>
+      <circle cx="8.5"  cy="11.2" r="1" fill="white" stroke="none"/>
+      <circle cx="12"   cy="11.2" r="1" fill="white" stroke="none"/>
+      <circle cx="15.5" cy="11.2" r="1" fill="white" stroke="none"/>
+    </svg>
+  </div>
 
-.then(data => {
+  <script>
+    /* =========================================================
+       1. 菜单
+    ========================================================= */
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+    menuBtn.onclick = () => {
+      menuBtn.classList.toggle("active");
+      sidebar.classList.toggle("active");
+    };
 
-const items = data.querySelectorAll("item");
+    /* =========================================================
+       2. 页头入场
+    ========================================================= */
+    setTimeout(() => {
+      document.getElementById("pageHeader").classList.add("show");
+    }, 300);
 
-let html = "";
+    /* =========================================================
+       3. 滚动淡入（查看全部按钮）
+    ========================================================= */
+    function checkScroll() {
+      const moreWrap = document.getElementById("moreWrap");
+      if (moreWrap && moreWrap.getBoundingClientRect().top < window.innerHeight - 60) {
+        moreWrap.classList.add("show");
+      }
+    }
+    window.addEventListener("scroll", checkScroll);
+    checkScroll();
 
-items.forEach((el,i)=>{
+    /* =========================================================
+       4. WriteFreely RSS 读取（逻辑保持原样）
+          新增：从 <description> 提取纯文本摘要
+    ========================================================= */
+    const feedURL = "https://paper.wf/meteor/feed/";
 
-if(i<5){
+    fetch(feedURL)
+      .then(response => response.text())
+      .then(str => new DOMParser().parseFromString(str, "text/xml"))
+      .then(data => {
+        const items = data.querySelectorAll("item");
+        let html = "";
 
-const title = el.querySelector("title").textContent;
+        items.forEach((el, i) => {
+          if (i < 5) {
+            const title = el.querySelector("title").textContent;
+            const link  = el.querySelector("link").textContent;
+            const date  = new Date(el.querySelector("pubDate").textContent);
+            const formattedDate =
+              date.getFullYear() + "-" +
+              String(date.getMonth() + 1).padStart(2, "0") + "-" +
+              String(date.getDate()).padStart(2, "0");
 
-const link = el.querySelector("link").textContent;
+            /* 摘要：从 description 提取纯文本，取前 120 字 */
+            const descNode = el.querySelector("description");
+            let summary = "";
+            if (descNode) {
+              const raw = descNode.textContent || descNode.innerHTML || "";
+              /* 去除 HTML 标签与多余空白 */
+              const plain = raw
+                .replace(/<[^>]*>/g, "")
+                .replace(/&nbsp;/g, " ")
+                .replace(/&amp;/g, "&")
+                .replace(/&lt;/g, "<")
+                .replace(/&gt;/g, ">")
+                .replace(/&quot;/g, '"')
+                .replace(/\s+/g, " ")
+                .trim();
+              summary = plain.length > 120 ? plain.slice(0, 120) + "…" : plain;
+            }
 
-const date = new Date(el.querySelector("pubDate").textContent);
+            /* 卡片序号徽标（01 ~ 05） */
+            const idx = String(i + 1).padStart(2, "0");
 
-const formattedDate =
-date.getFullYear()+"-"+
-String(date.getMonth()+1).padStart(2,"0")+"-"+
-String(date.getDate()).padStart(2,"0");
+            /* 入场动画延迟随序号递增 */
+            const delay = (i * 0.12).toFixed(2) + "s";
 
-html += `
-<div class="blog-card">
-<h3>${title}</h3>
-<div class="blog-date">${formattedDate}</div>
-<a href="${link}" target="_blank">阅读全文</a>
-</div>
-`;
+            html += `
+              <div class="blog-card" style="animation-delay:${delay}">
+                <div class="card-top-bar"></div>
+                <div class="card-body">
+                  <div class="card-meta">
+                    <span class="card-index">NO.${idx}</span>
+                    <span class="card-date">${formattedDate}</span>
+                  </div>
+                  <div class="card-title">${title}</div>
+                  ${summary ? `<div class="card-summary">${summary}</div>` : ""}
+                </div>
+                <div class="card-footer">
+                  <a class="card-link" href="${link}" target="_blank">阅读全文</a>
+                </div>
+              </div>
+            `;
+          }
+        });
 
-}
+        document.getElementById("blog-cards").innerHTML = html || '<div class="error-msg">暂无文章</div>';
+        checkScroll();
+      })
+      .catch(() => {
+        document.getElementById("blog-cards").innerHTML = '<div class="error-msg">★ 博客加载失败，请稍后重试 ★</div>';
+      });
 
-});
+    /* =========================================================
+       5. AI 按钮
+    ========================================================= */
+    document.getElementById("aiBtn").addEventListener("click", () => {
+      window.open("https://huggingface.co/spaces/rofg2/rotai", "_blank");
+    });
 
-document.getElementById("blog-cards").innerHTML = html;
+    /* =========================================================
+       6. 火流星特效（持续 15 秒）
+    ========================================================= */
+    (function () {
+      const canvas = document.getElementById("meteorCanvas");
+      const ctx    = canvas.getContext("2d");
 
-})
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener("resize", resize);
 
-.catch(err=>{
+      const DURATION   = 15000;
+      const SPAWN_RATE = 220;
+      const startTime  = performance.now();
+      let   lastSpawn  = 0;
+      const meteors    = [];
 
-document.getElementById("blog-cards").innerHTML="博客加载失败";
+      const COLORS = [
+        [255, 200,  40],
+        [255, 140,  20],
+        [255,  60,  20],
+        [255, 240, 180],
+      ];
 
-});
+      function spawnMeteor() {
+        const fromRight = Math.random() > 0.3;
+        const x = fromRight
+          ? canvas.width * (0.5 + Math.random() * 0.7)
+          : canvas.width * (Math.random() * 0.5);
+        const y       = Math.random() * canvas.height * 0.55;
+        const angle   = (Math.PI / 4) + (Math.random() - 0.5) * 0.5;
+        const speed   = 12 + Math.random() * 18;
+        const length  = 100 + Math.random() * 200;
+        const life    = 0;
+        const maxLife = 0.6 + Math.random() * 0.4;
+        const col     = COLORS[Math.floor(Math.random() * COLORS.length)];
+        meteors.push({ x, y, angle, speed, length, life, maxLife, col });
+      }
 
-</script>
+      function drawMeteor(m, alpha) {
+        const tailX = m.x - Math.cos(m.angle) * m.length;
+        const tailY = m.y - Math.sin(m.angle) * m.length;
+        const grad  = ctx.createLinearGradient(tailX, tailY, m.x, m.y);
+        const [r, g, b] = m.col;
 
+        grad.addColorStop(0,   `rgba(${r},${g},${b},0)`);
+        grad.addColorStop(0.6, `rgba(${r},${g},${b},${alpha * 0.4})`);
+        grad.addColorStop(1,   `rgba(255,255,255,${alpha})`);
+
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        ctx.strokeStyle = grad;
+        ctx.lineWidth   = 2.5;
+        ctx.shadowColor = `rgba(${r},${g},${b},${alpha})`;
+        ctx.shadowBlur  = 14;
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(m.x, m.y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.shadowBlur = 20;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      let prevTime = performance.now();
+
+      function animate(now) {
+        const elapsed = now - startTime;
+
+        if (elapsed > DURATION && meteors.length === 0) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          canvas.style.display = "none";
+          return;
+        }
+
+        const dt = (now - prevTime) / 1000;
+        prevTime = now;
+
+        if (elapsed < DURATION && now - lastSpawn > SPAWN_RATE) {
+          spawnMeteor();
+          if (Math.random() > 0.65) spawnMeteor();
+          lastSpawn = now;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = meteors.length - 1; i >= 0; i--) {
+          const m = meteors[i];
+          m.life += dt;
+          m.x    += Math.cos(m.angle) * m.speed;
+          m.y    += Math.sin(m.angle) * m.speed;
+
+          const progress = m.life / m.maxLife;
+          let alpha;
+          if (progress < 0.15)     alpha = progress / 0.15;
+          else if (progress < 0.7) alpha = 1;
+          else                     alpha = 1 - (progress - 0.7) / 0.3;
+
+          if (m.life >= m.maxLife || m.x > canvas.width + 200 || m.y > canvas.height + 200) {
+            meteors.splice(i, 1);
+            continue;
+          }
+
+          drawMeteor(m, Math.max(0, alpha));
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      requestAnimationFrame(animate);
+    })();
+  </script>
 </body>
 </html>
