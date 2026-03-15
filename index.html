@@ -1,642 +1,696 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RED STAR</title>
-    <meta name="description" content="赤星官网，展示文章、资源和革命理论">
-    <meta property="og:title" content="赤星RED STAR">
-    <meta property="og:description" content="展示文章、资源和理论。">
-    <meta property="og:image" content="https://raw.githubusercontent.com/hepsa2/redstar/main/00.png">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://redrev.pages.dev/index.html">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="无产阶级革命派">
-    <meta name="twitter:description" content="展示文章、资源和革命理论。">
-    <meta name="twitter:image" content="https://raw.githubusercontent.com/hepsa2/redstar/main/00.png">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        --red: #b30000;
-        --darkred: #7a0000;
-        --lightred: #ffd6d6;
-        --gold: #ffd700;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RED STAR</title>
+  <meta name="description" content="赤星官网，展示文章、资源和革命理论">
+  <meta property="og:title" content="赤星RED STAR">
+  <meta property="og:description" content="展示文章、资源和理论。">
+  <meta property="og:image" content="https://raw.githubusercontent.com/hepsa2/redstar/main/00.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://redrev.pages.dev/index.html">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="无产阶级革命派">
+  <meta name="twitter:description" content="展示文章、资源和革命理论。">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/hepsa2/redstar/main/00.png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #b30000;
+      --darkred: #7a0000;
+      --lightred: #ffd6d6;
+      --gold: #ffd700;
+    }
 
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { background: var(--lightred); font-family: 'Noto Sans SC', sans-serif; overflow-x: hidden; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--lightred); font-family: 'Noto Sans SC', sans-serif; overflow-x: hidden; }
 
-      /* ===== 流星画布（固定全屏，不遮交互） ===== */
-      #meteorCanvas {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        pointer-events: none;
-        z-index: 9998;
-      }
+    /* ===== 流星画布 ===== */
+    #meteorCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+    }
 
-      /* ===== 淡色红星背景 ===== */
-      .flag-bg {
-        position: fixed; top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 120vw; color: #ffd700; opacity: 0.08;
-        z-index: -1; pointer-events: none; user-select: none; line-height: 1;
-      }
+    /* ===== 淡色红星背景 ===== */
+    .flag-bg {
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 120vw; color: #ffd700; opacity: 0.08;
+      z-index: -1; pointer-events: none; user-select: none; line-height: 1;
+    }
 
-      /* ===== 苏联风汉堡按钮 ===== */
-      .menu-btn {
-        position: fixed; top: 25px; right: 25px;
-        width: 55px; height: 55px; background: #b30000; border-radius: 10px;
-        display: flex; flex-direction: column; justify-content: center;
-        align-items: center; gap: 6px; cursor: pointer;
-        box-shadow: 0 0 15px rgba(180,0,0,0.5); z-index: 1000;
-      }
-      .menu-btn span { width: 26px; height: 3px; background: white; transition: 0.3s; }
-      .menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(6px,6px); }
-      .menu-btn.active span:nth-child(2) { opacity: 0; }
-      .menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(6px,-6px); }
-      .menu-btn:before {
-        content: "★"; color: #ffd700; position: absolute;
-        top: -12px; right: -12px; font-size: 20px;
-      }
+    /* ===== 苏联风汉堡按钮 ===== */
+    .menu-btn {
+      position: fixed; top: 25px; right: 25px;
+      width: 55px; height: 55px; background: #b30000; border-radius: 10px;
+      display: flex; flex-direction: column; justify-content: center;
+      align-items: center; gap: 6px; cursor: pointer;
+      box-shadow: 0 0 15px rgba(180,0,0,0.5); z-index: 1000;
+    }
+    .menu-btn span { width: 26px; height: 3px; background: white; transition: 0.3s; }
+    .menu-btn.active span:nth-child(1) { transform: rotate(45deg) translate(6px,6px); }
+    .menu-btn.active span:nth-child(2) { opacity: 0; }
+    .menu-btn.active span:nth-child(3) { transform: rotate(-45deg) translate(6px,-6px); }
+    .menu-btn:before {
+      content: "★"; color: #ffd700; position: absolute;
+      top: -12px; right: -12px; font-size: 20px;
+    }
 
-      /* ===== 侧边栏 ===== */
-      .sidebar {
-        position: fixed; top: 0; right: 0; width: 350px; height: 100vh;
-        background: rgba(255,220,220,0.96); padding: 100px 40px;
-        transform: translateX(100%); transition: 0.35s;
-        border-left: 2px solid #900; z-index: 999;
-      }
-      .sidebar.active { transform: translateX(0); }
-      .sidebar a {
-        display: block; margin-bottom: 20px; padding: 14px;
-        background: white; border-radius: 8px;
-        text-decoration: none; color: #222; transition: 0.2s;
-      }
-      .sidebar a:hover { background: #ffcccc; }
+    /* ===== 侧边栏 ===== */
+    .sidebar {
+      position: fixed; top: 0; right: 0; width: 350px; height: 100vh;
+      background: rgba(255,220,220,0.96); padding: 100px 40px;
+      transform: translateX(100%); transition: 0.35s;
+      border-left: 2px solid #900; z-index: 999;
+      overflow-y: auto;
+    }
+    .sidebar.active { transform: translateX(0); }
 
-      /* ===== 主体 ===== */
-      .container { max-width: 1100px; margin: auto; padding: 60px 20px; text-align: center; }
+    /* 普通菜单项 */
+    .sidebar > a,
+    .sidebar-item > .sidebar-item-link {
+      display: block; margin-bottom: 20px; padding: 14px;
+      background: white; border-radius: 8px;
+      text-decoration: none; color: #222; transition: 0.2s;
+      font-size: 15px;
+    }
+    .sidebar > a:hover,
+    .sidebar-item > .sidebar-item-link:hover { background: #ffcccc; }
 
-      .hero-title {
-        font-size: clamp(36px, 8vw, 90px);
-        color: #8b0000; font-family: 'Orbitron', monospace; margin-bottom: 50px;
-      }
+    /* ===== 带子菜单的侧边栏条目 ===== */
+    .sidebar-item {
+      margin-bottom: 20px;
+      position: relative;
+    }
 
-      .image-box {
-        max-width: 750px; margin: auto; margin-bottom: 40px;
-        border-radius: 20px; overflow: hidden;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-      }
-      .image-box img { width: 100%; display: block; }
+    .sidebar-item-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px;
+      background: white;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #222;
+      transition: background 0.2s;
+      font-size: 15px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .sidebar-item-link:hover { background: #ffcccc; }
 
-      /* ===== 先驱者标题 ===== */
-      .pioneer-heading {
-        max-width: 750px;
-        margin: 0 auto 28px auto;
-        font-size: clamp(26px, 5vw, 44px);
-        font-weight: 700;
-        color: #6b0000;
-        letter-spacing: 0.12em;
-        font-family: 'Noto Sans SC', sans-serif;
-        /* 入场动画：从下方浮入 */
-        opacity: 0;
-        transform: translateY(48px);
-        transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-                    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
-        position: relative;
-      }
-      .pioneer-heading.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      /* 装饰线 */
-      .pioneer-heading::before,
-      .pioneer-heading::after {
-        content: '';
-        display: inline-block;
-        width: 32px; height: 2px;
-        background: #8b0000;
-        vertical-align: middle;
-        margin: 0 14px;
-        opacity: 0.6;
-      }
+    /* 展开箭头 */
+    .sidebar-arrow {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border-right: 2px solid var(--red);
+      border-bottom: 2px solid var(--red);
+      transform: rotate(45deg);
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
+      flex-shrink: 0;
+      margin-left: 8px;
+      position: relative;
+      top: -2px;
+    }
+    .sidebar-item.open .sidebar-arrow {
+      transform: rotate(225deg);
+      top: 2px;
+    }
 
-      /* ===== 正文（逐行淡入） ===== */
-      .story {
-        max-width: 750px;
-        margin: auto;
-        font-size: 18px;
-        line-height: 1.9;
-        margin-top: 0;
-        text-align: center;
-      }
-      .story p {
-        opacity: 0;
-        transform: translateY(28px);
-        transition: opacity 0.7s ease, transform 0.7s ease;
-        /* 延迟由 JS 注入 */
-      }
-      .story p.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* 子菜单容器 */
+    .sidebar-sub {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.28s ease;
+      opacity: 0;
+    }
+    .sidebar-item.open .sidebar-sub {
+      max-height: 200px;
+      opacity: 1;
+    }
 
-      /* ===== 滚动口号 ===== */
-      .slogan {
-        margin-top: 200px; font-size: 42px; color: #a00000; font-weight: 700;
-        opacity: 0; transform: translateY(80px); transition: 1.2s;
-      }
-      .slogan.show { opacity: 1; transform: translateY(0); }
+    /* 子菜单内的链接 */
+    .sidebar-sub a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      padding: 11px 14px 11px 20px;
+      background: rgba(179,0,0,0.06);
+      border-left: 3px solid var(--red);
+      border-radius: 0 8px 8px 0;
+      text-decoration: none;
+      color: #5a0000;
+      font-size: 14px;
+      transition: background 0.2s, padding-left 0.2s;
+    }
+    .sidebar-sub a:hover {
+      background: rgba(179,0,0,0.14);
+      padding-left: 26px;
+    }
+    .sidebar-sub a::before {
+      content: "★";
+      color: var(--gold);
+      font-size: 10px;
+      flex-shrink: 0;
+    }
 
-      /* ===== 倒计时容器 ===== */
-      .countdown-wrap {
-        margin-top: 64px;
-        padding-bottom: 80px;
-        opacity: 0;
-        transform: translateY(60px);
-        transition: opacity 1.2s 0.25s, transform 1.2s 0.25s;
-      }
-      .countdown-wrap.show { opacity: 1; transform: translateY(0); }
+    /* ===== 主体 ===== */
+    .container { max-width: 1100px; margin: auto; padding: 60px 20px; text-align: center; }
 
-      .countdown-heading {
-        font-family: 'Noto Sans SC', sans-serif;
-        font-size: 0.82rem;
-        letter-spacing: 0.32em;
-        color: #7a0000;
-        opacity: 0.75;
-        margin-bottom: 28px;
-      }
-      .countdown-heading::before,
-      .countdown-heading::after { content: " ★ "; color: #b30000; }
+    .hero-title {
+      font-size: clamp(36px, 8vw, 90px);
+      color: #8b0000; font-family: 'Orbitron', monospace; margin-bottom: 50px;
+    }
 
-      .countdown-grid {
-        display: inline-flex;
-        align-items: flex-start;
-        justify-content: center;
-        gap: 10px;
-        flex-wrap: wrap;
-      }
+    .image-box {
+      max-width: 750px; margin: auto; margin-bottom: 40px;
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+    .image-box img { width: 100%; display: block; }
 
-      .countdown-unit { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    /* ===== 先驱者标题 ===== */
+    .pioneer-heading {
+      max-width: 750px;
+      margin: 0 auto 28px auto;
+      font-size: clamp(26px, 5vw, 44px);
+      font-weight: 700;
+      color: #6b0000;
+      letter-spacing: 0.12em;
+      font-family: 'Noto Sans SC', sans-serif;
+      opacity: 0;
+      transform: translateY(48px);
+      transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+      position: relative;
+    }
+    .pioneer-heading.show { opacity: 1; transform: translateY(0); }
+    .pioneer-heading::before,
+    .pioneer-heading::after {
+      content: '';
+      display: inline-block;
+      width: 32px; height: 2px;
+      background: #8b0000;
+      vertical-align: middle;
+      margin: 0 14px;
+      opacity: 0.6;
+    }
 
-      .countdown-box {
-        background: #8b0000;
-        color: #ffd6d6;
-        font-family: 'Orbitron', monospace;
-        font-size: clamp(26px, 4.5vw, 54px);
-        font-weight: 700;
-        width:  clamp(70px, 11vw, 112px);
-        height: clamp(70px, 11vw, 112px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 6px;
-        letter-spacing: 0.04em;
-        box-shadow:
-          0 6px 24px rgba(100,0,0,0.30),
-          inset 0 1px 0 rgba(255,180,180,0.18),
-          inset 0 -1px 0 rgba(0,0,0,0.2);
-        position: relative;
-        overflow: hidden;
-      }
-      .countdown-box::after {
-        content: '';
-        position: absolute;
-        left: 0; right: 0; top: 50%;
-        height: 1px;
-        background: rgba(0,0,0,0.22);
-        pointer-events: none;
-      }
+    /* ===== 正文 ===== */
+    .story {
+      max-width: 750px;
+      margin: auto;
+      font-size: 18px;
+      line-height: 1.9;
+      text-align: center;
+    }
+    .story p {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .story p.show { opacity: 1; transform: translateY(0); }
 
-      .countdown-unit-label {
-        font-family: 'Noto Sans SC', sans-serif;
-        font-size: 0.65rem;
-        letter-spacing: 0.22em;
-        color: #8b0000;
-        opacity: 0.6;
-      }
+    /* ===== 口号 ===== */
+    .slogan {
+      margin-top: 200px; font-size: 42px; color: #a00000; font-weight: 700;
+      opacity: 0; transform: translateY(80px); transition: 1.2s;
+    }
+    .slogan.show { opacity: 1; transform: translateY(0); }
 
-      .countdown-sep {
-        font-family: 'Orbitron', monospace;
-        font-size: clamp(26px, 4.5vw, 50px);
-        color: #b30000;
-        font-weight: 700;
-        line-height: 1;
-        margin-top: clamp(12px, 2vw, 26px);
-        opacity: 0.45;
-        user-select: none;
-        flex-shrink: 0;
-      }
+    /* ===== 倒计时 ===== */
+    .countdown-wrap {
+      margin-top: 64px;
+      padding-bottom: 80px;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 1.2s 0.25s, transform 1.2s 0.25s;
+    }
+    .countdown-wrap.show { opacity: 1; transform: translateY(0); }
 
-      .countdown-finished {
-        font-family: 'Orbitron', monospace;
-        font-size: 1.5rem;
-        color: #b30000;
-        letter-spacing: 0.18em;
-      }
+    .countdown-heading {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.32em;
+      color: #7a0000;
+      opacity: 0.75;
+      margin-bottom: 28px;
+    }
+    .countdown-heading::before,
+    .countdown-heading::after { content: " ★ "; color: #b30000; }
 
-      /* ===== AI 悬浮按钮（现代风，匹配赤星主题） ===== */
-      #aiBtn {
-        position: fixed;
-        bottom: 28px;
-        right: 28px;
-        width: 62px;
-        height: 62px;
-        background: linear-gradient(135deg, #c0000a 0%, #7a0000 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow:
-          0 4px 20px rgba(140, 0, 0, 0.45),
-          0 1px 4px rgba(0,0,0,0.18);
-        transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-                    box-shadow 0.22s ease;
-        z-index: 9999;
-        /* 脉冲光晕 */
-        animation: aiBtnPulse 3s ease-in-out infinite;
-      }
-      #aiBtn:hover {
-        transform: scale(1.1);
-        box-shadow:
-          0 8px 32px rgba(180, 0, 0, 0.55),
-          0 2px 8px rgba(0,0,0,0.22);
-        animation: none;
-      }
-      #aiBtn:active {
-        transform: scale(0.96);
-      }
-      /* 脉冲光圈 */
-      #aiBtn::before {
-        content: '';
-        position: absolute;
-        inset: -4px;
-        border-radius: 50%;
-        border: 2px solid rgba(200, 0, 0, 0.4);
-        animation: aiRingPulse 3s ease-in-out infinite;
-      }
-      /* 按钮内 SVG 图标 */
-      #aiBtn svg {
-        width: 28px; height: 28px;
-        fill: none;
-        stroke: #fff;
-        stroke-width: 1.8;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        position: relative;
-        z-index: 1;
-      }
-      /* 金色小星星角标 */
-      #aiBtn::after {
-        content: '★';
-        position: absolute;
-        top: -5px; right: -3px;
-        font-size: 13px;
-        color: #ffd700;
-        line-height: 1;
-        filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
-        animation: starSpin 6s linear infinite;
-      }
+    .countdown-grid {
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-      @keyframes aiBtnPulse {
-        0%, 100% { box-shadow: 0 4px 20px rgba(140,0,0,0.45), 0 1px 4px rgba(0,0,0,0.18); }
-        50%       { box-shadow: 0 4px 30px rgba(190,0,0,0.65), 0 1px 4px rgba(0,0,0,0.18); }
-      }
-      @keyframes aiRingPulse {
-        0%   { transform: scale(1);   opacity: 0.7; }
-        60%  { transform: scale(1.18); opacity: 0; }
-        100% { transform: scale(1);   opacity: 0; }
-      }
-      @keyframes starSpin {
-        0%   { transform: rotate(0deg) scale(1); }
-        50%  { transform: rotate(180deg) scale(1.2); }
-        100% { transform: rotate(360deg) scale(1); }
-      }
+    .countdown-unit { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
-      /* ===== 响应式 ===== */
-      @media (max-width: 768px) {
-        .sidebar { width: 100%; }
-        .flag-bg { font-size: 150vw; }
-        .countdown-grid { gap: 6px; }
-        #aiBtn { width: 54px; height: 54px; bottom: 20px; right: 20px; }
-        #aiBtn svg { width: 24px; height: 24px; }
-      }
-    </style>
-  </head>
-  <body>
+    .countdown-box {
+      background: #8b0000;
+      color: #ffd6d6;
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(26px, 4.5vw, 54px);
+      font-weight: 700;
+      width:  clamp(70px, 11vw, 112px);
+      height: clamp(70px, 11vw, 112px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      letter-spacing: 0.04em;
+      box-shadow:
+        0 6px 24px rgba(100,0,0,0.30),
+        inset 0 1px 0 rgba(255,180,180,0.18),
+        inset 0 -1px 0 rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .countdown-box::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; top: 50%;
+      height: 1px;
+      background: rgba(0,0,0,0.22);
+      pointer-events: none;
+    }
 
-    <!-- 流星画布 -->
-    <canvas id="meteorCanvas"></canvas>
+    .countdown-unit-label {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      color: #8b0000;
+      opacity: 0.6;
+    }
 
-    <div class="flag-bg">★</div>
+    .countdown-sep {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(26px, 4.5vw, 50px);
+      color: #b30000;
+      font-weight: 700;
+      line-height: 1;
+      margin-top: clamp(12px, 2vw, 26px);
+      opacity: 0.45;
+      user-select: none;
+      flex-shrink: 0;
+    }
 
-    <div class="menu-btn" id="menuBtn"><span></span><span></span><span></span></div>
+    .countdown-finished {
+      font-family: 'Orbitron', monospace;
+      font-size: 1.5rem;
+      color: #b30000;
+      letter-spacing: 0.18em;
+    }
 
-    <div class="sidebar" id="sidebar">
-      <a href="jieshao.html">关于我们</a>
-      <a href="blog.html">文章查看</a>
-      <a href="network.html">网安知识</a>
-      <a href="download.html">文件下载</a>
-      <a href="wenw/about.html">公示板块</a>
+    /* ===== AI 悬浮按钮 ===== */
+    #aiBtn {
+      position: fixed;
+      bottom: 28px; right: 28px;
+      width: 62px; height: 62px;
+      background: linear-gradient(135deg, #c0000a 0%, #7a0000 100%);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(140,0,0,0.45), 0 1px 4px rgba(0,0,0,0.18);
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.22s ease;
+      z-index: 9999;
+      animation: aiBtnPulse 3s ease-in-out infinite;
+    }
+    #aiBtn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 32px rgba(180,0,0,0.55), 0 2px 8px rgba(0,0,0,0.22);
+      animation: none;
+    }
+    #aiBtn:active { transform: scale(0.96); }
+    #aiBtn::before {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      border: 2px solid rgba(200,0,0,0.4);
+      animation: aiRingPulse 3s ease-in-out infinite;
+    }
+    #aiBtn svg {
+      width: 28px; height: 28px;
+      fill: none; stroke: #fff;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      position: relative; z-index: 1;
+    }
+    #aiBtn::after {
+      content: '★';
+      position: absolute; top: -5px; right: -3px;
+      font-size: 13px; color: #ffd700; line-height: 1;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+      animation: starSpin 6s linear infinite;
+    }
+
+    @keyframes aiBtnPulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(140,0,0,0.45), 0 1px 4px rgba(0,0,0,0.18); }
+      50%       { box-shadow: 0 4px 30px rgba(190,0,0,0.65), 0 1px 4px rgba(0,0,0,0.18); }
+    }
+    @keyframes aiRingPulse {
+      0%   { transform: scale(1);    opacity: 0.7; }
+      60%  { transform: scale(1.18); opacity: 0; }
+      100% { transform: scale(1);    opacity: 0; }
+    }
+    @keyframes starSpin {
+      0%   { transform: rotate(0deg)   scale(1); }
+      50%  { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; }
+      .flag-bg  { font-size: 150vw; }
+      .countdown-grid { gap: 6px; }
+      #aiBtn { width: 54px; height: 54px; bottom: 20px; right: 20px; }
+      #aiBtn svg { width: 24px; height: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 流星画布 -->
+  <canvas id="meteorCanvas"></canvas>
+
+  <div class="flag-bg">★</div>
+
+  <div class="menu-btn" id="menuBtn">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- 侧边栏 -->
+  <div class="sidebar" id="sidebar">
+    <a href="jieshao.html">关于我们</a>
+
+    <!-- 文章查看（带子菜单） -->
+    <div class="sidebar-item" id="articleItem">
+      <div class="sidebar-item-link" id="articleToggle">
+        <span>文章查看</span>
+        <span class="sidebar-arrow"></span>
+      </div>
+      <div class="sidebar-sub">
+        <a href="blog.html">群众论坛</a>
+        <a href="meteor.html">博客页面</a>
+      </div>
     </div>
 
-    <div class="container">
+    <a href="network.html">网安知识</a>
+    <a href="download.html">文件下载</a>
+    <a href="wenw/about.html">公示板块</a>
+  </div>
 
-      <h1 class="hero-title">觉醒赤星</h1>
+  <div class="container">
+    <h1 class="hero-title">觉醒赤星</h1>
 
-      <div class="image-box">
-        <img src="aa.png">
-      </div>
+    <div class="image-box">
+      <img src="aa.png">
+    </div>
 
-      <!-- 先驱者标题 -->
-      <div class="pioneer-heading" id="pioneerHeading">做一位先驱者</div>
+    <!-- 先驱者标题 -->
+    <div class="pioneer-heading" id="pioneerHeading">做一位先驱者</div>
 
-      <!-- 正文（逐行） -->
-      <div class="story" id="storyBlock">
-        <p>在联合左派中间居统治地位的悲观主义</p>
-        <p>将不会在群众中间有什么市场</p>
-        <p>因为群众根本就不是悲观主义者</p>
-        <p>让我们记住毛主席的这句箴言吧</p>
-        <p>修正主义者和机会主义者才会是悲观主义者</p>
-        <p>而无产阶级和共产主义者永远是乐观派</p>
-        <p>因为未来是我们的——这是必然的</p>
-        <p>只要我们能坚持路线，坚定不移地走下去</p>
-        <p>群众从来没有也永远不会堕入悲观主义泥潭</p>
-        <p>有人说他们是悲观的、无力的，这实际上是荒谬的诽谤</p>
-        <p>群众永远是战斗的</p>
-        <p>但是群众斗争需要领导，需要一个党</p>
-      </div>
+    <!-- 正文逐行 -->
+    <div class="story" id="storyBlock">
+      <p>在联合左派中间居统治地位的悲观主义</p>
+      <p>将不会在群众中间有什么市场</p>
+      <p>因为群众根本就不是悲观主义者</p>
+      <p>让我们记住毛主席的这句箴言吧</p>
+      <p>修正主义者和机会主义者才会是悲观主义者</p>
+      <p>而无产阶级和共产主义者永远是乐观派</p>
+      <p>因为未来是我们的——这是必然的</p>
+      <p>只要我们能坚持路线，坚定不移地走下去</p>
+      <p>群众从来没有也永远不会堕入悲观主义泥潭</p>
+      <p>有人说他们是悲观的、无力的，这实际上是荒谬的诽谤</p>
+      <p>群众永远是战斗的</p>
+      <p>但是群众斗争需要领导，需要一个党</p>
+    </div>
 
-      <!-- 口号 -->
-      <div class="slogan" id="slogan">
-        加入地方组织建设，迈向政党化
-      </div>
+    <!-- 口号 -->
+    <div class="slogan" id="slogan">
+      加入地方组织建设，迈向政党化
+    </div>
 
-      <!-- 倒计时 -->
-      <div class="countdown-wrap" id="countdownWrap">
-        <div class="countdown-heading">距离本年结束</div>
-        <div class="countdown-grid" id="countdownGrid">
-          <div class="countdown-unit">
-            <div class="countdown-box" id="cd-days">--</div>
-            <div class="countdown-unit-label">天</div>
-          </div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit">
-            <div class="countdown-box" id="cd-hours">--</div>
-            <div class="countdown-unit-label">时</div>
-          </div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit">
-            <div class="countdown-box" id="cd-minutes">--</div>
-            <div class="countdown-unit-label">分</div>
-          </div>
-          <div class="countdown-sep">:</div>
-          <div class="countdown-unit">
-            <div class="countdown-box" id="cd-seconds">--</div>
-            <div class="countdown-unit-label">秒</div>
-          </div>
+    <!-- 倒计时 -->
+    <div class="countdown-wrap" id="countdownWrap">
+      <div class="countdown-heading">距离本年结束</div>
+      <div class="countdown-grid" id="countdownGrid">
+        <div class="countdown-unit">
+          <div class="countdown-box" id="cd-days">--</div>
+          <div class="countdown-unit-label">天</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-box" id="cd-hours">--</div>
+          <div class="countdown-unit-label">时</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-box" id="cd-minutes">--</div>
+          <div class="countdown-unit-label">分</div>
+        </div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit">
+          <div class="countdown-box" id="cd-seconds">--</div>
+          <div class="countdown-unit-label">秒</div>
         </div>
       </div>
-
-    </div><!-- /container -->
-
-    <!-- AI 悬浮按钮 -->
-    <div id="aiBtn" title="打开 AI 对话">
-      <!-- 自定义 SVG：对话气泡 + 星形点缀 -->
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <!-- 对话气泡主体 -->
-        <path d="M12 3C7.03 3 3 6.69 3 11.2c0 2.4 1.1 4.57 2.88 6.1L5 21l3.9-1.72A10.1 10.1 0 0012 19.4c4.97 0 9-3.69 9-8.2S16.97 3 12 3z"/>
-        <!-- 内部三个点：表示AI思考 -->
-        <circle cx="8.5"  cy="11.2" r="1" fill="white" stroke="none"/>
-        <circle cx="12"   cy="11.2" r="1" fill="white" stroke="none"/>
-        <circle cx="15.5" cy="11.2" r="1" fill="white" stroke="none"/>
-      </svg>
     </div>
 
-    <script>
-      /* =========================================================
-         1. 菜单
-      ========================================================= */
-      const menuBtn = document.getElementById("menuBtn");
-      const sidebar = document.getElementById("sidebar");
-      menuBtn.onclick = () => {
-        menuBtn.classList.toggle("active");
-        sidebar.classList.toggle("active");
-      };
+  </div><!-- /container -->
 
-      /* =========================================================
-         2. 英文重定向
-      ========================================================= */
-      if (navigator.language.startsWith("en")) {
-        window.location.href = "/en/";
-      }
+  <!-- AI 悬浮按钮 -->
+  <div id="aiBtn" title="打开 AI 对话">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3C7.03 3 3 6.69 3 11.2c0 2.4 1.1 4.57 2.88 6.1L5 21l3.9-1.72A10.1 10.1 0 0012 19.4c4.97 0 9-3.69 9-8.2S16.97 3 12 3z"/>
+      <circle cx="8.5"  cy="11.2" r="1" fill="white" stroke="none"/>
+      <circle cx="12"   cy="11.2" r="1" fill="white" stroke="none"/>
+      <circle cx="15.5" cy="11.2" r="1" fill="white" stroke="none"/>
+    </svg>
+  </div>
 
-      /* =========================================================
-         3. 先驱者标题：页面载入后立即浮入
-      ========================================================= */
-      const pioneerHeading = document.getElementById("pioneerHeading");
-      // 短暂延迟后展示，给页面渲染留出时间
-      setTimeout(() => {
-        pioneerHeading.classList.add("show");
-      }, 400);
+  <script>
+    /* =========================================================
+       1. 菜单
+    ========================================================= */
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+    menuBtn.onclick = () => {
+      menuBtn.classList.toggle("active");
+      sidebar.classList.toggle("active");
+    };
 
-      /* =========================================================
-         4. 正文逐行滚动淡入
-         先驱者标题浮入后，向下滚动时正文逐行出现
-      ========================================================= */
-      const storyLines = document.querySelectorAll(".story p");
-      // 为每行注入递增延迟
-      storyLines.forEach((p, i) => {
-        p.style.transitionDelay = `${i * 0.08}s`;
+    /* =========================================================
+       2. 文章查看子菜单展开 / 收起
+    ========================================================= */
+    document.getElementById("articleToggle").addEventListener("click", () => {
+      document.getElementById("articleItem").classList.toggle("open");
+    });
+
+    /* =========================================================
+       3. 英文重定向
+    ========================================================= */
+    if (navigator.language.startsWith("en")) {
+      window.location.href = "/en/";
+    }
+
+    /* =========================================================
+       4. 先驱者标题入场
+    ========================================================= */
+    setTimeout(() => {
+      document.getElementById("pioneerHeading").classList.add("show");
+    }, 400);
+
+    /* =========================================================
+       5. 正文逐行滚动淡入
+    ========================================================= */
+    const storyLines = document.querySelectorAll(".story p");
+    storyLines.forEach((p, i) => {
+      p.style.transitionDelay = `${i * 0.08}s`;
+    });
+
+    function revealStory() {
+      const triggerY = window.innerHeight - 80;
+      storyLines.forEach(p => {
+        if (p.getBoundingClientRect().top < triggerY) {
+          p.classList.add("show");
+        }
       });
+    }
 
-      function revealStory() {
-        const triggerY = window.innerHeight - 80;
-        storyLines.forEach(p => {
-          if (p.getBoundingClientRect().top < triggerY) {
-            p.classList.add("show");
-          }
-        });
+    /* =========================================================
+       6. 口号 + 倒计时 滚动淡入
+    ========================================================= */
+    const slogan        = document.getElementById("slogan");
+    const countdownWrap = document.getElementById("countdownWrap");
+
+    function checkScroll() {
+      const vy = window.innerHeight - 100;
+      if (slogan.getBoundingClientRect().top < vy)          slogan.classList.add("show");
+      if (countdownWrap.getBoundingClientRect().top < vy + 40) countdownWrap.classList.add("show");
+      revealStory();
+    }
+
+    window.addEventListener("scroll", checkScroll);
+    checkScroll();
+
+    /* =========================================================
+       7. 倒计时
+    ========================================================= */
+    function pad(n) { return String(n).padStart(2, "0"); }
+    function tick() {
+      const now    = new Date();
+      const target = new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
+      const diff   = target - now;
+      if (diff <= 0) {
+        document.getElementById("countdownGrid").innerHTML =
+          '<div class="countdown-finished">★ 新年快乐 ★</div>';
+        return;
+      }
+      const s = Math.floor(diff / 1000);
+      document.getElementById("cd-days").textContent    = pad(Math.floor(s / 86400));
+      document.getElementById("cd-hours").textContent   = pad(Math.floor((s % 86400) / 3600));
+      document.getElementById("cd-minutes").textContent = pad(Math.floor((s % 3600) / 60));
+      document.getElementById("cd-seconds").textContent = pad(s % 60);
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    /* =========================================================
+       8. AI 按钮
+    ========================================================= */
+    document.getElementById("aiBtn").addEventListener("click", () => {
+      window.open("https://huggingface.co/spaces/rofg2/rotai", "_blank");
+    });
+
+    /* =========================================================
+       9. 火流星特效（持续 15 秒）
+    ========================================================= */
+    (function () {
+      const canvas = document.getElementById("meteorCanvas");
+      const ctx    = canvas.getContext("2d");
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      const DURATION   = 15000;
+      const SPAWN_RATE = 220;
+      const startTime  = performance.now();
+      let   lastSpawn  = 0;
+      const meteors    = [];
+
+      const COLORS = [
+        [255, 200,  40],
+        [255, 140,  20],
+        [255,  60,  20],
+        [255, 240, 180],
+      ];
+
+      function spawnMeteor() {
+        const fromRight = Math.random() > 0.3;
+        const x = fromRight
+          ? canvas.width * (0.5 + Math.random() * 0.7)
+          : canvas.width * (Math.random() * 0.5);
+        const y       = Math.random() * canvas.height * 0.55;
+        const angle   = (Math.PI / 4) + (Math.random() - 0.5) * 0.5;
+        const speed   = 12 + Math.random() * 18;
+        const length  = 100 + Math.random() * 200;
+        const life    = 0;
+        const maxLife = 0.6 + Math.random() * 0.4;
+        const col     = COLORS[Math.floor(Math.random() * COLORS.length)];
+        meteors.push({ x, y, angle, speed, length, life, maxLife, col });
       }
 
-      /* =========================================================
-         5. 其它滚动淡入（口号 + 倒计时）
-      ========================================================= */
-      const slogan        = document.getElementById("slogan");
-      const countdownWrap = document.getElementById("countdownWrap");
+      function drawMeteor(m, alpha) {
+        const tailX = m.x - Math.cos(m.angle) * m.length;
+        const tailY = m.y - Math.sin(m.angle) * m.length;
+        const grad  = ctx.createLinearGradient(tailX, tailY, m.x, m.y);
+        const [r, g, b] = m.col;
 
-      function checkScroll() {
-        const vy = window.innerHeight - 100;
-        if (slogan.getBoundingClientRect().top < vy)        slogan.classList.add("show");
-        if (countdownWrap.getBoundingClientRect().top < vy + 40) countdownWrap.classList.add("show");
-        revealStory();
+        grad.addColorStop(0,   `rgba(${r},${g},${b},0)`);
+        grad.addColorStop(0.6, `rgba(${r},${g},${b},${alpha * 0.4})`);
+        grad.addColorStop(1,   `rgba(255,255,255,${alpha})`);
+
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        ctx.strokeStyle = grad;
+        ctx.lineWidth   = 2.5;
+        ctx.shadowColor = `rgba(${r},${g},${b},${alpha})`;
+        ctx.shadowBlur  = 14;
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(m.x, m.y);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.shadowBlur = 20;
+        ctx.fill();
+        ctx.restore();
       }
 
-      window.addEventListener("scroll", checkScroll);
-      checkScroll();
+      let prevTime = performance.now();
 
-      /* =========================================================
-         6. 倒计时
-      ========================================================= */
-      function pad(n) { return String(n).padStart(2, "0"); }
-      function tick() {
-        const now    = new Date();
-        const target = new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
-        const diff   = target - now;
-        if (diff <= 0) {
-          document.getElementById("countdownGrid").innerHTML =
-            '<div class="countdown-finished">★ 新年快乐 ★</div>';
+      function animate(now) {
+        const elapsed = now - startTime;
+
+        if (elapsed > DURATION && meteors.length === 0) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          canvas.style.display = "none";
           return;
         }
-        const s = Math.floor(diff / 1000);
-        document.getElementById("cd-days").textContent    = pad(Math.floor(s / 86400));
-        document.getElementById("cd-hours").textContent   = pad(Math.floor((s % 86400) / 3600));
-        document.getElementById("cd-minutes").textContent = pad(Math.floor((s % 3600) / 60));
-        document.getElementById("cd-seconds").textContent = pad(s % 60);
+
+        const dt = (now - prevTime) / 1000;
+        prevTime = now;
+
+        if (elapsed < DURATION && now - lastSpawn > SPAWN_RATE) {
+          spawnMeteor();
+          if (Math.random() > 0.65) spawnMeteor();
+          lastSpawn = now;
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = meteors.length - 1; i >= 0; i--) {
+          const m = meteors[i];
+          m.life += dt;
+          m.x    += Math.cos(m.angle) * m.speed;
+          m.y    += Math.sin(m.angle) * m.speed;
+
+          const progress = m.life / m.maxLife;
+          let alpha;
+          if (progress < 0.15)     alpha = progress / 0.15;
+          else if (progress < 0.7) alpha = 1;
+          else                     alpha = 1 - (progress - 0.7) / 0.3;
+
+          if (m.life >= m.maxLife || m.x > canvas.width + 200 || m.y > canvas.height + 200) {
+            meteors.splice(i, 1);
+            continue;
+          }
+
+          drawMeteor(m, Math.max(0, alpha));
+        }
+
+        requestAnimationFrame(animate);
       }
-      tick();
-      setInterval(tick, 1000);
 
-      /* =========================================================
-         7. AI 按钮
-      ========================================================= */
-      document.getElementById("aiBtn").addEventListener("click", () => {
-        window.open("https://huggingface.co/spaces/rofg2/rotai", "_blank");
-      });
-
-      /* =========================================================
-         8. 火流星特效（持续 15 秒，canvas 覆盖全屏）
-      ========================================================= */
-      (function () {
-        const canvas = document.getElementById("meteorCanvas");
-        const ctx    = canvas.getContext("2d");
-
-        // 画布自适应窗口
-        function resize() {
-          canvas.width  = window.innerWidth;
-          canvas.height = window.innerHeight;
-        }
-        resize();
-        window.addEventListener("resize", resize);
-
-        const DURATION     = 15000;   // 总持续毫秒
-        const SPAWN_RATE   = 220;     // 每隔多少 ms 生成一颗流星（ms）
-        const startTime    = performance.now();
-        let   lastSpawn    = 0;
-        const meteors      = [];
-
-        /* 流星颜色系：以金色 / 火红为主，偶尔纯白 */
-        const COLORS = [
-          [255, 200,  40],  // 金黄
-          [255, 140,  20],  // 火橙
-          [255,  60,  20],  // 赤红
-          [255, 240, 180],  // 暖白
-        ];
-
-        function spawnMeteor() {
-          // 随机从顶部或右侧射入，角度偏向左下
-          const fromRight = Math.random() > 0.3;
-          const x = fromRight
-            ? canvas.width * (0.5 + Math.random() * 0.7)
-            : canvas.width * (Math.random() * 0.5);
-          const y = Math.random() * canvas.height * 0.55;
-
-          const angle  = (Math.PI / 4) + (Math.random() - 0.5) * 0.5; // ~45° ± offset
-          const speed  = 12 + Math.random() * 18;
-          const length = 100 + Math.random() * 200;
-          const life   = 0;
-          const maxLife = 0.6 + Math.random() * 0.4; // 0.6 ~ 1.0 s
-          const col    = COLORS[Math.floor(Math.random() * COLORS.length)];
-
-          meteors.push({ x, y, angle, speed, length, life, maxLife, col });
-        }
-
-        function drawMeteor(m, alpha) {
-          const tailX = m.x - Math.cos(m.angle) * m.length;
-          const tailY = m.y - Math.sin(m.angle) * m.length;
-
-          const grad = ctx.createLinearGradient(tailX, tailY, m.x, m.y);
-          const [r, g, b] = m.col;
-
-          // 头部：明亮核心
-          grad.addColorStop(0,   `rgba(${r},${g},${b},0)`);
-          grad.addColorStop(0.6, `rgba(${r},${g},${b},${alpha * 0.4})`);
-          grad.addColorStop(1,   `rgba(255,255,255,${alpha})`);
-
-          ctx.save();
-          ctx.globalCompositeOperation = "lighter";
-          ctx.strokeStyle = grad;
-          ctx.lineWidth   = 2.5;
-          ctx.shadowColor = `rgba(${r},${g},${b},${alpha})`;
-          ctx.shadowBlur  = 14;
-          ctx.beginPath();
-          ctx.moveTo(tailX, tailY);
-          ctx.lineTo(m.x,  m.y);
-          ctx.stroke();
-
-          // 亮核点
-          ctx.beginPath();
-          ctx.arc(m.x, m.y, 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-          ctx.shadowBlur = 20;
-          ctx.fill();
-          ctx.restore();
-        }
-
-        let rafId;
-        let prevTime = performance.now();
-
-        function animate(now) {
-          const elapsed = now - startTime;
-
-          // 超过15秒就停止生成，等已有流星消失后清除画布
-          if (elapsed > DURATION && meteors.length === 0) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            canvas.style.display = "none";
-            return;
-          }
-
-          const dt = (now - prevTime) / 1000;  // 秒
-          prevTime = now;
-
-          // 生成新流星
-          if (elapsed < DURATION && now - lastSpawn > SPAWN_RATE) {
-            spawnMeteor();
-            // 偶尔连发两颗，增加密度感
-            if (Math.random() > 0.65) spawnMeteor();
-            lastSpawn = now;
-          }
-
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-          for (let i = meteors.length - 1; i >= 0; i--) {
-            const m = meteors[i];
-            m.life += dt;
-            m.x    += Math.cos(m.angle) * m.speed;
-            m.y    += Math.sin(m.angle) * m.speed;
-
-            // 淡入淡出透明度
-            const progress = m.life / m.maxLife;
-            let alpha;
-            if (progress < 0.15)      alpha = progress / 0.15;
-            else if (progress < 0.7)  alpha = 1;
-            else                      alpha = 1 - (progress - 0.7) / 0.3;
-
-            if (m.life >= m.maxLife || m.x > canvas.width + 200 || m.y > canvas.height + 200) {
-              meteors.splice(i, 1);
-              continue;
-            }
-
-            drawMeteor(m, Math.max(0, alpha));
-          }
-
-          rafId = requestAnimationFrame(animate);
-        }
-
-        rafId = requestAnimationFrame(animate);
-      })();
-    </script>
-  </body>
+      requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
 </html>
