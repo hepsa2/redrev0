@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>博客</title>
+<title>论坛</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
 :root{--red:#b30000;--lightred:#ffd6d6;}
@@ -58,7 +58,7 @@ else { showCategories(); }
 
 /* ── 显示栏目列表 ── */
 async function showCategories() {
-    let html = "<h1>博客栏目</h1>";
+    let html = "<h1>群众论坛</h1>";
     for (let key in categories) {
         let c = categories[key];
         html += `<div class="category" onclick="toggle('${key}')">
