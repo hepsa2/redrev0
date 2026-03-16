@@ -510,7 +510,13 @@
     setTimeout(() => {
       document.getElementById("pioneerHeading").classList.add("show");
     }, 400);
+    const token = new URLSearchParams(location.search).get("token");
 
+    if(!token){
+
+    document.body.innerHTML="Access denied";
+
+    }
     /* =========================================================
        5. 正文逐行滚动淡入
     ========================================================= */
