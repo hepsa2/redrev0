@@ -1,11 +1,17 @@
 name: Mirror Sync
+
 on:
   schedule:
     - cron: '0 2 * * *'   # 每天 UTC 02:00 自动执行
   push:
     branches:
-      - main               # main 分支有 push 时也触发
-  workflow_dispatch:       # 支持手动触发
+      - main
+  workflow_dispatch:
+
+# 👇 就加在这里（关键）
+concurrency:
+  group: mirror-sync
+  cancel-in-progress: true
 
 jobs:
   mirror:
@@ -15,7 +21,7 @@ jobs:
       - name: Checkout with full history
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # 拉取完整历史，避免 mirror 丢失提交
+          fetch-depth: 0
 
       - name: Push to mirror repository
         run: |
