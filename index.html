@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RED STAR</title>
-  <meta name="description" content="赤星官网，展示文章、资源和革命理论">
-  <meta property="og:title" content="赤星RED STAR">
-  <meta property="og:description" content="展示文章、资源和理论。">
+  <meta name="description" content="赤星官网，展示文章与理论资源">
+  <meta property="og:title" content="赤星 RED STAR">
+  <meta property="og:description" content="展示文章与理论资源">
   <meta property="og:image" content="https://raw.githubusercontent.com/hepsa2/redstar/main/00.png">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://redrev.pages.dev/index.html">
+  <meta property="og:url" content="https://www.rofg2.org/">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="觉醒赤星">
-  <meta name="twitter:description" content="展示文章、资源和革命理论。">
+  <meta name="twitter:title" content="赤星">
+  <meta name="twitter:description" content="展示文章与理论资源">
   <meta name="twitter:image" content="https://raw.githubusercontent.com/hepsa2/redstar/main/00.png">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
   <style>
@@ -70,7 +70,6 @@
     }
     .sidebar.active { transform: translateX(0); }
 
-    /* 普通菜单项 */
     .sidebar > a,
     .sidebar-item > .sidebar-item-link {
       display: block; margin-bottom: 20px; padding: 14px;
@@ -81,7 +80,6 @@
     .sidebar > a:hover,
     .sidebar-item > .sidebar-item-link:hover { background: #ffcccc; }
 
-    /* ===== 带子菜单的侧边栏条目 ===== */
     .sidebar-item {
       margin-bottom: 20px;
       position: relative;
@@ -103,7 +101,6 @@
     }
     .sidebar-item-link:hover { background: #ffcccc; }
 
-    /* 展开箭头 */
     .sidebar-arrow {
       display: inline-block;
       width: 18px; height: 18px;
@@ -121,7 +118,6 @@
       top: 2px;
     }
 
-    /* 子菜单容器 */
     .sidebar-sub {
       overflow: hidden;
       max-height: 0;
@@ -134,7 +130,6 @@
       opacity: 1;
     }
 
-    /* 子菜单内的链接 */
     .sidebar-sub a {
       display: flex;
       align-items: center;
@@ -376,107 +371,102 @@
       #aiBtn { width: 54px; height: 54px; bottom: 20px; right: 20px; }
       #aiBtn svg { width: 24px; height: 24px; }
     }
+
     /* ===== 警告弹窗 ===== */
-#warnOverlay {
-  position: fixed; inset: 0;
-  background: rgba(80, 0, 0, 0.55);
-  backdrop-filter: blur(3px);
-  z-index: 99999;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity 0.4s ease;
-  pointer-events: none;
-}
-#warnOverlay.show { opacity: 1; pointer-events: all; }
+    #warnOverlay {
+      position: fixed; inset: 0;
+      background: rgba(80, 0, 0, 0.55);
+      backdrop-filter: blur(3px);
+      z-index: 99999;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    #warnOverlay.show { opacity: 1; pointer-events: all; }
 
-#warnBox {
-  background: #fff5f5;
-  border: 2px solid #8b0000;
-  border-radius: 14px;
-  padding: 40px 36px 32px;
-  max-width: 480px; width: 90%;
-  position: relative;
-  box-shadow: 0 20px 60px rgba(100,0,0,0.35), 0 0 0 6px rgba(139,0,0,0.08);
-  text-align: center;
-  animation: warnPop 0.45s cubic-bezier(0.34,1.56,0.64,1);
-}
-@keyframes warnPop {
-  from { transform: scale(0.82) translateY(24px); opacity: 0; }
-  to   { transform: scale(1)    translateY(0);    opacity: 1; }
-}
+    #warnBox {
+      background: #fff5f5;
+      border: 2px solid #8b0000;
+      border-radius: 14px;
+      padding: 40px 36px 32px;
+      max-width: 480px; width: 90%;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(100,0,0,0.35), 0 0 0 6px rgba(139,0,0,0.08);
+      text-align: center;
+      animation: warnPop 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes warnPop {
+      from { transform: scale(0.82) translateY(24px); opacity: 0; }
+      to   { transform: scale(1)    translateY(0);    opacity: 1; }
+    }
 
-#warnBox .warn-star {
-  font-size: 36px; color: #b30000; display: block; margin-bottom: 14px;
-  animation: starSpin 6s linear infinite;
-}
+    #warnBox .warn-star {
+      font-size: 36px; color: #b30000; display: block; margin-bottom: 14px;
+      animation: starSpin 6s linear infinite;
+    }
 
-#warnBox h2 {
-  font-family: 'Noto Sans SC', sans-serif;
-  font-size: 1.15rem; font-weight: 700;
-  color: #7a0000; letter-spacing: 0.08em; margin-bottom: 18px;
-}
-#warnBox h2::before, #warnBox h2::after {
-  content: " ★ "; color: #b30000; font-size: 0.75em;
-}
+    #warnBox h2 {
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 1.15rem; font-weight: 700;
+      color: #7a0000; letter-spacing: 0.08em; margin-bottom: 18px;
+    }
+    #warnBox h2::before, #warnBox h2::after {
+      content: " ★ "; color: #b30000; font-size: 0.75em;
+    }
 
-#warnBox p {
-  font-size: 15px; line-height: 1.85; color: #3a0000;
-  font-family: 'Noto Sans SC', sans-serif;
-}
-#warnBox p strong {
-  color: #b30000; font-weight: 700;
-  background: #ffe0e0; padding: 1px 5px; border-radius: 4px;
-}
-#warnBox p a {
-  color: #8b0000; text-decoration: underline;
-  text-underline-offset: 3px; font-weight: 700;
-}
-#warnBox p a:hover { color: #c0000a; }
+    #warnBox p {
+      font-size: 15px; line-height: 1.85; color: #3a0000;
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    #warnBox p strong {
+      color: #b30000; font-weight: 700;
+      background: #ffe0e0; padding: 1px 5px; border-radius: 4px;
+    }
+    #warnBox p a {
+      color: #8b0000; text-decoration: underline;
+      text-underline-offset: 3px; font-weight: 700;
+    }
+    #warnBox p a:hover { color: #c0000a; }
 
-/* 倒计时进度条 */
-#warnProgress {
-  margin-top: 24px;
-  height: 4px; border-radius: 2px;
-  background: #ffd6d6; overflow: hidden;
-}
-#warnProgressBar {
-  height: 100%; width: 100%;
-  background: linear-gradient(90deg, #b30000, #ff4040);
-  border-radius: 2px;
-  transform-origin: left;
-  transition: transform 1s linear;
-}
+    #warnProgress {
+      margin-top: 24px;
+      height: 4px; border-radius: 2px;
+      background: #ffd6d6; overflow: hidden;
+    }
+    #warnProgressBar {
+      height: 100%; width: 100%;
+      background: linear-gradient(90deg, #b30000, #ff4040);
+      border-radius: 2px;
+      transform-origin: left;
+      transition: transform 1s linear;
+    }
 
-#warnTimer {
-  margin-top: 8px;
-  font-size: 12px; color: #a05050; letter-spacing: 0.1em;
-  font-family: 'Orbitron', monospace;
-}
+    #warnTimer {
+      margin-top: 8px;
+      font-size: 12px; color: #a05050; letter-spacing: 0.1em;
+      font-family: 'Orbitron', monospace;
+    }
 
-#warnClose {
-  position: absolute; top: 14px; right: 16px;
-  background: none; border: none; cursor: pointer;
-  font-size: 22px; color: #8b0000; line-height: 1;
-  transition: transform 0.2s, color 0.2s;
-}
-#warnClose:hover { transform: scale(1.2) rotate(90deg); color: #c0000a; }
+    #warnClose {
+      position: absolute; top: 14px; right: 16px;
+      background: none; border: none; cursor: pointer;
+      font-size: 22px; color: #8b0000; line-height: 1;
+      transition: transform 0.2s, color 0.2s;
+    }
+    #warnClose:hover { transform: scale(1.2) rotate(90deg); color: #c0000a; }
   </style>
 </head>
 <body>
 
-  <!-- 流星画布 -->
   <canvas id="meteorCanvas"></canvas>
-
   <div class="flag-bg">★</div>
 
   <div class="menu-btn" id="menuBtn">
     <span></span><span></span><span></span>
   </div>
 
-  <!-- 侧边栏 -->
   <div class="sidebar" id="sidebar">
     <a href="jieshao.html">关于我们</a>
-
-    <!-- 文章查看（带子菜单） -->
     <div class="sidebar-item" id="articleItem">
       <div class="sidebar-item-link" id="articleToggle">
         <span>文章查看</span>
@@ -487,44 +477,27 @@
         <a href="meteor.html">博客页面</a>
       </div>
     </div>
-
     <a href="network.html">网安知识</a>
     <a href="download.html">文件下载</a>
     <a href="wenw/about.html">公示板块</a>
   </div>
 
   <div class="container">
-    <h1 class="hero-title">觉醒赤星</h1>
+    <h1 class="hero-title">流动赤星</h1>
 
     <div class="image-box">
       <img src="aa.png">
     </div>
 
-    <!-- 先驱者标题 -->
-    <div class="pioneer-heading" id="pioneerHeading">做一位先驱者</div>
+    <!-- 先驱者标题：内容由 JS 延迟注入 -->
+    <div class="pioneer-heading" id="pioneerHeading"></div>
 
-    <!-- 正文逐行 -->
-    <div class="story" id="storyBlock">
-      <p>在联合左派中间居统治地位的悲观主义</p>
-      <p>将不会在群众中间有什么市场</p>
-      <p>因为群众根本就不是悲观主义者</p>
-      <p>让我们记住毛主席的这句箴言吧</p>
-      <p>修正主义者和机会主义者才会是悲观主义者</p>
-      <p>而无产阶级和共产主义者永远是乐观派</p>
-      <p>因为未来是我们的——这是必然的</p>
-      <p>只要我们能坚持路线，坚定不移地走下去</p>
-      <p>群众从来没有也永远不会堕入悲观主义泥潭</p>
-      <p>有人说他们是悲观的、无力的，这实际上是荒谬的诽谤</p>
-      <p>群众永远是战斗的</p>
-      <p>但是群众斗争需要领导，需要一个党</p>
-    </div>
+    <!-- 正文：段落由 JS 延迟注入 -->
+    <div class="story" id="storyBlock"></div>
 
-    <!-- 口号 -->
-    <div class="slogan" id="slogan">
-      加入地方组织建设，迈向政党化
-    </div>
+    <!-- 口号：内容由 JS 延迟注入 -->
+    <div class="slogan" id="slogan"></div>
 
-    <!-- 倒计时 -->
     <div class="countdown-wrap" id="countdownWrap">
       <div class="countdown-heading">距离本年结束</div>
       <div class="countdown-grid" id="countdownGrid">
@@ -549,10 +522,8 @@
         </div>
       </div>
     </div>
+  </div>
 
-  </div><!-- /container -->
-
-  <!-- AI 悬浮按钮 -->
   <div id="aiBtn" title="打开 AI 对话">
     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 3C7.03 3 3 6.69 3 11.2c0 2.4 1.1 4.57 2.88 6.1L5 21l3.9-1.72A10.1 10.1 0 0012 19.4c4.97 0 9-3.69 9-8.2S16.97 3 12 3z"/>
@@ -560,6 +531,22 @@
       <circle cx="12"   cy="11.2" r="1" fill="white" stroke="none"/>
       <circle cx="15.5" cy="11.2" r="1" fill="white" stroke="none"/>
     </svg>
+  </div>
+
+  <!-- 警告弹窗 -->
+  <div id="warnOverlay">
+    <div id="warnBox">
+      <button id="warnClose" title="关闭">✕</button>
+      <span class="warn-star">★</span>
+      <h2>访问提示</h2>
+      <p>
+        请不要用钓鱼剃子访问本站。<br>
+        如果不知道什么是锑子，<strong>切忌</strong>点击右下角 AI 交流按钮，<br>
+        并先访问<a href="network.html">此页面</a>。
+      </p>
+      <div id="warnProgress"><div id="warnProgressBar"></div></div>
+      <div id="warnTimer">17 秒后自动关闭</div>
+    </div>
   </div>
 
   <script>
@@ -574,7 +561,7 @@
     };
 
     /* =========================================================
-       2. 文章查看子菜单展开 / 收起
+       2. 文章查看子菜单
     ========================================================= */
     document.getElementById("articleToggle").addEventListener("click", () => {
       document.getElementById("articleItem").classList.toggle("open");
@@ -588,47 +575,99 @@
     }
 
     /* =========================================================
-       4. 先驱者标题入场
+       4. 内容解码与注入
+       ─ xx段落以 base64(encodeURIComponent(JSON)) 存储
+       ─  1800ms 再解码注入，避免即时抓取
+       ─ 若 URL 含有效 token 参数则立即注入（适配 CF Worker 跳转）
     ========================================================= */
-    setTimeout(() => {
-      document.getElementById("pioneerHeading").classList.add("show");
-    }, 400);
-  
-    /* =========================================================
-       5. 正文逐行滚动淡入
-    ========================================================= */
-    const storyLines = document.querySelectorAll(".story p");
-    storyLines.forEach((p, i) => {
-      p.style.transitionDelay = `${i * 0.08}s`;
-    });
+    (function () {
 
-    function revealStory() {
-      const triggerY = window.innerHeight - 80;
-      storyLines.forEach(p => {
-        if (p.getBoundingClientRect().top < triggerY) {
-          p.classList.add("show");
+      // ── 编码内容库（由构建脚本生成，勿手动修改明文）──
+      const _d = "JTdCJTIycCUyMiUzQSUyMiVFNSU4MSU5QSVFNCVCOCU4MCVFNCVCRCU4RCVFNSU4NSU4OCVFOSVBOSVCMSVFOCU4MCU4NSUyMiUyQyUyMnMlMjIlM0ElMjIlRTUlOEElQTAlRTUlODUlQTUlRTUlOUMlQjAlRTYlOTYlQjclRTclQkIlODQlRTclQkIlODclRTUlQkIlQkElRTglQUUlQkUlRUYlQkMlOEMlRTglQkYlODglRTUlOTAlOTElRTYlOTQlQjclRTUlODUlOUElRTUlOEMlOTYlMjIlMkMlMjJsJTIyJTNBJTVCJTIyJUU1JTlDJUE4JUU4JTgxJTk0JUU1JTkwJTg4JUU1JUI3JUE2JUU2JUI0JUJFJUU0JUI4JUFEJUU5JTk3JUI0JUU1JUIxJTg1JUU3JUJCJTlGJUU2JUIyJUJCJUU1JTlDJUIwJUU0JUJEJThEJUU3JTlBJTg0JUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JTIyJTJDJTIyJUU1JUIwJTg2JUU0JUI4JThEJUU0JUJDJTlBJUU1JTlDJUE4JUU3JUJFJUE0JUU0JUJDJTk3JU00JUI4JUFEJUU5JTk3JUI0JUU2JTlDJTg5JUU0JUJCJTgwJUU0JUI5JTg4JUU1JUI4JTgyJUU1JTlDJUJBJTIyJTJDJTIyJUU1JTlCJUEwJUU0JUI4JUJBJUU3JUJFJUE0JUU0JUJDJTk3JUU2JUEwJUI5JUU2JTlDJUFDJUU1JUIwJUIxJUU0JUI4JThEJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JTIyJTJDJTIyJUU4JUFFJUE5JUU2JTg4JTkxJUU0JUJCJUFDJUU4JUFFJUIwJUU0JUJEJThGJUU2JUFGJTlCJUU0JUI4JUJCJUU1JUI4JUFEJUU3JTlBJTg0JUU4JUJGJTk5JUU1JThGJUE1JUU3JUFFJUI0JUU4JUE4JTgwJUU1JTkwJUE3JTIyJTJDJTIyJUU0JUJGJUFFJUU2JUFEJUEzJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU1JTkyJThDJUU2JTlDJUJBJUU0JUJDJTlBJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU2JTg5JThEJUU0JUJDJTlBJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JTIyJTJDJTIyJUU4JTgwJThDJUU2JTk3JUEwJUU0JUJBJUE3JUU5JTk4JUI2JUU3JUJBJUE3JUU1JTkyJThDJUU1JTg1JUIxJUU0JUJBJUE3JUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU2JUIwJUI4JUU4JUJGJTlDJUU2JTk4JUFGJUU0JUI5JTkwJUU4JUE3JTgyJUU2JUI0JUJFJTIyJTJDJTIyJUU1JTlCJUEwJUU0JUI4JUJBJUU2JTlDJUFBJUU2JTlEJUE1JUU2JTk4JUFGJUU2JTg4JTkxJUU0JUJCJUFDJUU3JTlBJTg0JUUyJTgwJTk0JUUyJTgwJTk0JUU4JUJGJTk5JUU2JTk4JUFGJUU1JUJGJTg1JUU3JTg0JUI2JUU3JTlBJTg0JTIyJTJDJTIyJUU1JThGJUFBJUU4JUE2JTgxJUU2JTg4JTkxJUU0JUJCJUFDJUU4JTgzJUJEJUU1JTlEJTlBJUU2JThDJTgxJUU4JUI3JUFGJUE3JUJBJUJGJUVGJUJDJThDJUU1JTlEJTlBJUU1JUFFJTlBJUU0JUI4JThEJUU3JUE3JUJCJUU1JTlDJUIwJUU4JUI1JUIwJUU0JUI4JThCJUU1JThFJUJCJTIyJTJDJTIyJUU3JUJFJUE0JUU0JUJDJTk3JUU0JUJCJThFJUU2JTlEJUE1JUU2JUIyJUExJUU2JTlDJTg5JUU0JUI5JTlGJUU2JUIwJUI4JUU4JUJGJTlDJUU0JUI4JThEJUU0JUJDJTlBJUU1JUEwJTk1JUU1JTg1JUE1JUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU2JUIzJUE1JUU2JUJEJUFEJTIyJTJDJTIyJUU2JTlDJTg5JUU0JUJBJUJBJUU4JUFGJUI0JUU0JUJCJTk2JUU0JUJCJUFDJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU3JTlBJTg0JUUzJTgwJTgxJUU2JTk3JUEwJUU1JThBJTlCJUU3JTlBJTg0JUVGJUJDJThDJUU4JUJGJTk5JUU1JUFFJTlFJUU5JTk5JTg1JUU0JUI4JThBJUU2JTk4JUFGJUU4JThEJTkyJUU4JUIwJUFDJUU3JTlBJTg0JUU4JUFGJUJEJUU4JUIwJUE0JTIyJTJDJTIyJUU3JUJFJUE0JUU0JUJDJTk3JUU2JUIwJUI4JUU4JUJGJTlDJUU2JTk4JUFGJUU2JTg4JTk4JUU2JTk2JTk3JUU3JTlBJTg0JTIyJTJDJTIyJUU0JUJEJTg2JUU2JTk4JUFGJUU3JUJFJUE0JUU0JUJDJTk3JUU2JTk2JTk3JUU0JUJBJTg5JUU5JTlDJTgwJUU4JUE2JTgxJUU5JUEyJTg2JUU1JUFGJUJDJUVGJUJDJThDJUU5JTlDJTgwJUU4JUE2JTgxJUU0JUI4JTgwJUU0JUI4JUFBJUU1JTg1JTlBJTIyJTVEJTdE";
+
+      // ── 解码函数 ──
+      function _dec(s) {
+        try {
+          return JSON.parse(decodeURIComponent(atob(s)));
+        } catch (e) {
+          return null;
         }
-      });
-    }
+      }
+
+      // ── 注入函数 ──
+      function injectContent() {
+        const c = _dec(_d);
+        if (!c) return;
+
+        // 先驱者标题
+        const ph = document.getElementById("pioneerHeading");
+        if (ph) {
+          ph.textContent = c.p;
+          setTimeout(() => ph.classList.add("show"), 100);
+        }
+
+        // 口号
+        const sl = document.getElementById("slogan");
+        if (sl) sl.textContent = c.s;
+
+        // 正文段落
+        const story = document.getElementById("storyBlock");
+        if (story && Array.isArray(c.l)) {
+          c.l.forEach((line, i) => {
+            const p = document.createElement("p");
+            p.textContent = line;
+            p.style.transitionDelay = (i * 0.08) + "s";
+            story.appendChild(p);
+          });
+        }
+
+        // 注入后触发一次滚动检查
+        checkScroll();
+      }
+
+      // ── 判断是否携带有效 token（CF Worker 跳转过来时立即渲染）──
+      function hasValidToken() {
+        try {
+          const params = new URLSearchParams(window.location.search);
+          const tk = params.get("tk") || params.get("token");
+          // token 存在且长度合理（CF Worker 生成的 token 通常 ≥16 位）
+          return tk && tk.length >= 16;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      // ── 延迟策略：有 token 立即注入，否则延迟 1800ms ──
+      const delay = hasValidToken() ? 0 : 1800;
+      setTimeout(injectContent, delay);
+
+    })();
 
     /* =========================================================
-       6. 口号 + 倒计时 滚动淡入
+       5. 滚动淡入（口号 + 倒计时 + 正文）
     ========================================================= */
     const slogan        = document.getElementById("slogan");
     const countdownWrap = document.getElementById("countdownWrap");
 
     function checkScroll() {
       const vy = window.innerHeight - 100;
-      if (slogan.getBoundingClientRect().top < vy)          slogan.classList.add("show");
-      if (countdownWrap.getBoundingClientRect().top < vy + 40) countdownWrap.classList.add("show");
-      revealStory();
+      if (slogan.getBoundingClientRect().top < vy)
+        slogan.classList.add("show");
+      if (countdownWrap.getBoundingClientRect().top < vy + 40)
+        countdownWrap.classList.add("show");
+
+      const storyLines = document.querySelectorAll(".story p");
+      const triggerY   = window.innerHeight - 80;
+      storyLines.forEach(p => {
+        if (p.getBoundingClientRect().top < triggerY)
+          p.classList.add("show");
+      });
     }
 
     window.addEventListener("scroll", checkScroll);
-    checkScroll();
 
     /* =========================================================
-       7. 倒计时
+       6. 倒计时
     ========================================================= */
     function pad(n) { return String(n).padStart(2, "0"); }
     function tick() {
@@ -650,14 +689,14 @@
     setInterval(tick, 1000);
 
     /* =========================================================
-       8. AI 按钮
+       7. AI 按钮
     ========================================================= */
     document.getElementById("aiBtn").addEventListener("click", () => {
       window.open("https://huggingface.co/spaces/rofg2/rotai", "_blank");
     });
 
     /* =========================================================
-       9. 火流星特效（持续 15 秒）
+       8. 火流星特效（持续 15 秒）
     ========================================================= */
     (function () {
       const canvas = document.getElementById("meteorCanvas");
@@ -774,64 +813,44 @@
 
       requestAnimationFrame(animate);
     })();
+
+    /* =========================================================
+       9. 警告弹窗
+    ========================================================= */
+    (function () {
+      const overlay    = document.getElementById("warnOverlay");
+      const closeBtn   = document.getElementById("warnClose");
+      const bar        = document.getElementById("warnProgressBar");
+      const timerLabel = document.getElementById("warnTimer");
+      const TOTAL      = 17;
+      let   remaining  = TOTAL;
+      let   ticker;
+
+      function closeWarn() {
+        overlay.classList.remove("show");
+        clearInterval(ticker);
+      }
+
+      function startCountdown() {
+        bar.style.transform = "scaleX(1)";
+        ticker = setInterval(() => {
+          remaining--;
+          bar.style.transform = `scaleX(${remaining / TOTAL})`;
+          timerLabel.textContent = `${remaining} 秒后自动关闭`;
+          if (remaining <= 0) closeWarn();
+        }, 1000);
+      }
+
+      setTimeout(() => {
+        overlay.classList.add("show");
+        startCountdown();
+      }, 3000);
+
+      closeBtn.addEventListener("click", closeWarn);
+      overlay.addEventListener("click", e => {
+        if (e.target === overlay) closeWarn();
+      });
+    })();
   </script>
-  <!-- 警告弹窗 -->
-<div id="warnOverlay">
-  <div id="warnBox">
-    <button id="warnClose" title="关闭">✕</button>
-    <span class="warn-star">★</span>
-    <h2>访问提示</h2>
-    <p>
-      请开启非“加速器”的安全 VPN 或代理访问本站。<br>
-      如果不知道什么是 VPN / 代理，<strong>切忌</strong>点击右下角 AI 交流按钮，<br>
-      并先访问<a href="network.html">此页面</a>。
-    </p>
-    <div id="warnProgress"><div id="warnProgressBar"></div></div>
-    <div id="warnTimer">17 秒后自动关闭</div>
-  </div>
-</div>
-
-<script>
-  /* ===== 警告弹窗逻辑 ===== */
-  (function () {
-    const overlay     = document.getElementById("warnOverlay");
-    const closeBtn    = document.getElementById("warnClose");
-    const bar         = document.getElementById("warnProgressBar");
-    const timerLabel  = document.getElementById("warnTimer");
-    const TOTAL       = 17;
-    let   remaining   = TOTAL;
-    let   ticker;
-
-    function closeWarn() {
-      overlay.classList.remove("show");
-      clearInterval(ticker);
-    }
-
-    function startCountdown() {
-      /* 进度条初始满格，逐步缩短 */
-      bar.style.transform = "scaleX(1)";
-
-      ticker = setInterval(() => {
-        remaining--;
-        const ratio = remaining / TOTAL;
-        bar.style.transform = `scaleX(${ratio})`;
-        timerLabel.textContent = `${remaining} 秒后自动关闭`;
-        if (remaining <= 0) closeWarn();
-      }, 1000);
-    }
-
-    /* 3 秒后显示 */
-    setTimeout(() => {
-      overlay.classList.add("show");
-      startCountdown();
-    }, 3000);
-
-    closeBtn.addEventListener("click", closeWarn);
-    /* 点击蒙版外区域也可关闭 */
-    overlay.addEventListener("click", e => {
-      if (e.target === overlay) closeWarn();
-    });
-  })();
-</script>
 </body>
 </html>
