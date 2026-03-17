@@ -19,6 +19,6 @@ jobs:
 
       - name: Push mirror
         env:
-          MIRROR_URL: https://${{ secrets.MIRROR_TOKEN }}@github.com/your-org/mirror-repo.git
+          MIRROR_URL: https://${{ secrets.MIRROR_TOKEN }}@github.com/hepsa2/redrev0.git
         run: |
           git push --mirror "$MIRROR_URL"
