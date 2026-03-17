@@ -26,16 +26,12 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: var(--lightred); font-family: 'Noto Sans SC', sans-serif; overflow-x: hidden; }
 
-    /* ===== 流星画布 ===== */
     #meteorCanvas {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 9998;
+      pointer-events: none; z-index: 9998;
     }
 
-    /* ===== 淡色红星背景 ===== */
     .flag-bg {
       position: fixed; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
@@ -43,7 +39,6 @@
       z-index: -1; pointer-events: none; user-select: none; line-height: 1;
     }
 
-    /* ===== 苏联风汉堡按钮 ===== */
     .menu-btn {
       position: fixed; top: 25px; right: 25px;
       width: 55px; height: 55px; background: #b30000; border-radius: 10px;
@@ -60,13 +55,11 @@
       top: -12px; right: -12px; font-size: 20px;
     }
 
-    /* ===== 侧边栏 ===== */
     .sidebar {
       position: fixed; top: 0; right: 0; width: 350px; height: 100vh;
       background: rgba(255,220,220,0.96); padding: 100px 40px;
       transform: translateX(100%); transition: 0.35s;
-      border-left: 2px solid #900; z-index: 999;
-      overflow-y: auto;
+      border-left: 2px solid #900; z-index: 999; overflow-y: auto;
     }
     .sidebar.active { transform: translateX(0); }
 
@@ -74,88 +67,47 @@
     .sidebar-item > .sidebar-item-link {
       display: block; margin-bottom: 20px; padding: 14px;
       background: white; border-radius: 8px;
-      text-decoration: none; color: #222; transition: 0.2s;
-      font-size: 15px;
+      text-decoration: none; color: #222; transition: 0.2s; font-size: 15px;
     }
     .sidebar > a:hover,
     .sidebar-item > .sidebar-item-link:hover { background: #ffcccc; }
 
-    .sidebar-item {
-      margin-bottom: 20px;
-      position: relative;
-    }
+    .sidebar-item { margin-bottom: 20px; position: relative; }
 
     .sidebar-item-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px;
-      background: white;
-      border-radius: 8px;
-      text-decoration: none;
-      color: #222;
-      transition: background 0.2s;
-      font-size: 15px;
-      cursor: pointer;
-      user-select: none;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px; background: white; border-radius: 8px;
+      text-decoration: none; color: #222; transition: background 0.2s;
+      font-size: 15px; cursor: pointer; user-select: none;
     }
     .sidebar-item-link:hover { background: #ffcccc; }
 
     .sidebar-arrow {
-      display: inline-block;
-      width: 18px; height: 18px;
-      border-right: 2px solid var(--red);
-      border-bottom: 2px solid var(--red);
+      display: inline-block; width: 18px; height: 18px;
+      border-right: 2px solid var(--red); border-bottom: 2px solid var(--red);
       transform: rotate(45deg);
       transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
-      flex-shrink: 0;
-      margin-left: 8px;
-      position: relative;
-      top: -2px;
+      flex-shrink: 0; margin-left: 8px; position: relative; top: -2px;
     }
-    .sidebar-item.open .sidebar-arrow {
-      transform: rotate(225deg);
-      top: 2px;
-    }
+    .sidebar-item.open .sidebar-arrow { transform: rotate(225deg); top: 2px; }
 
     .sidebar-sub {
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1),
-                  opacity 0.28s ease;
+      overflow: hidden; max-height: 0;
+      transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease;
       opacity: 0;
     }
-    .sidebar-item.open .sidebar-sub {
-      max-height: 200px;
-      opacity: 1;
-    }
+    .sidebar-item.open .sidebar-sub { max-height: 200px; opacity: 1; }
 
     .sidebar-sub a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 8px;
-      padding: 11px 14px 11px 20px;
-      background: rgba(179,0,0,0.06);
-      border-left: 3px solid var(--red);
-      border-radius: 0 8px 8px 0;
-      text-decoration: none;
-      color: #5a0000;
-      font-size: 14px;
-      transition: background 0.2s, padding-left 0.2s;
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 8px; padding: 11px 14px 11px 20px;
+      background: rgba(179,0,0,0.06); border-left: 3px solid var(--red);
+      border-radius: 0 8px 8px 0; text-decoration: none; color: #5a0000;
+      font-size: 14px; transition: background 0.2s, padding-left 0.2s;
     }
-    .sidebar-sub a:hover {
-      background: rgba(179,0,0,0.14);
-      padding-left: 26px;
-    }
-    .sidebar-sub a::before {
-      content: "★";
-      color: var(--gold);
-      font-size: 10px;
-      flex-shrink: 0;
-    }
+    .sidebar-sub a:hover { background: rgba(179,0,0,0.14); padding-left: 26px; }
+    .sidebar-sub a::before { content: "★"; color: var(--gold); font-size: 10px; flex-shrink: 0; }
 
-    /* ===== 主体 ===== */
     .container { max-width: 1100px; margin: auto; padding: 60px 20px; text-align: center; }
 
     .hero-title {
@@ -170,156 +122,103 @@
     }
     .image-box img { width: 100%; display: block; }
 
-    /* ===== 先驱者标题 ===== */
     .pioneer-heading {
-      max-width: 750px;
-      margin: 0 auto 28px auto;
-      font-size: clamp(26px, 5vw, 44px);
-      font-weight: 700;
-      color: #6b0000;
-      letter-spacing: 0.12em;
+      max-width: 750px; margin: 0 auto 28px auto;
+      font-size: clamp(26px, 5vw, 44px); font-weight: 700;
+      color: #6b0000; letter-spacing: 0.12em;
       font-family: 'Noto Sans SC', sans-serif;
-      opacity: 0;
-      transform: translateY(48px);
-      transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
-                  transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity: 0; transform: translateY(48px);
+      transition: opacity 1s cubic-bezier(0.22,1,0.36,1),
+                  transform 1s cubic-bezier(0.22,1,0.36,1);
       position: relative;
     }
     .pioneer-heading.show { opacity: 1; transform: translateY(0); }
     .pioneer-heading::before,
     .pioneer-heading::after {
-      content: '';
-      display: inline-block;
-      width: 32px; height: 2px;
-      background: #8b0000;
-      vertical-align: middle;
-      margin: 0 14px;
-      opacity: 0.6;
+      content: ''; display: inline-block; width: 32px; height: 2px;
+      background: #8b0000; vertical-align: middle; margin: 0 14px; opacity: 0.6;
     }
 
-    /* ===== 正文 ===== */
     .story {
-      max-width: 750px;
-      margin: auto;
-      font-size: 18px;
-      line-height: 1.9;
-      text-align: center;
+      max-width: 750px; margin: auto;
+      font-size: 18px; line-height: 1.9; text-align: center;
     }
     .story p {
-      opacity: 0;
-      transform: translateY(28px);
+      opacity: 0; transform: translateY(28px);
       transition: opacity 0.7s ease, transform 0.7s ease;
     }
     .story p.show { opacity: 1; transform: translateY(0); }
 
-    /* ===== 口号 ===== */
     .slogan {
       margin-top: 200px; font-size: 42px; color: #a00000; font-weight: 700;
       opacity: 0; transform: translateY(80px); transition: 1.2s;
     }
     .slogan.show { opacity: 1; transform: translateY(0); }
 
-    /* ===== 倒计时 ===== */
     .countdown-wrap {
-      margin-top: 64px;
-      padding-bottom: 80px;
-      opacity: 0;
-      transform: translateY(60px);
+      margin-top: 64px; padding-bottom: 80px;
+      opacity: 0; transform: translateY(60px);
       transition: opacity 1.2s 0.25s, transform 1.2s 0.25s;
     }
     .countdown-wrap.show { opacity: 1; transform: translateY(0); }
 
     .countdown-heading {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: 0.82rem;
-      letter-spacing: 0.32em;
-      color: #7a0000;
-      opacity: 0.75;
-      margin-bottom: 28px;
+      font-family: 'Noto Sans SC', sans-serif; font-size: 0.82rem;
+      letter-spacing: 0.32em; color: #7a0000; opacity: 0.75; margin-bottom: 28px;
     }
     .countdown-heading::before,
     .countdown-heading::after { content: " ★ "; color: #b30000; }
 
     .countdown-grid {
-      display: inline-flex;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      display: inline-flex; align-items: flex-start;
+      justify-content: center; gap: 10px; flex-wrap: wrap;
     }
 
     .countdown-unit { display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
     .countdown-box {
-      background: #8b0000;
-      color: #ffd6d6;
+      background: #8b0000; color: #ffd6d6;
       font-family: 'Orbitron', monospace;
-      font-size: clamp(26px, 4.5vw, 54px);
-      font-weight: 700;
-      width:  clamp(70px, 11vw, 112px);
-      height: clamp(70px, 11vw, 112px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      letter-spacing: 0.04em;
-      box-shadow:
-        0 6px 24px rgba(100,0,0,0.30),
-        inset 0 1px 0 rgba(255,180,180,0.18),
-        inset 0 -1px 0 rgba(0,0,0,0.2);
-      position: relative;
-      overflow: hidden;
+      font-size: clamp(26px, 4.5vw, 54px); font-weight: 700;
+      width: clamp(70px, 11vw, 112px); height: clamp(70px, 11vw, 112px);
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 6px; letter-spacing: 0.04em;
+      box-shadow: 0 6px 24px rgba(100,0,0,0.30),
+                  inset 0 1px 0 rgba(255,180,180,0.18),
+                  inset 0 -1px 0 rgba(0,0,0,0.2);
+      position: relative; overflow: hidden;
     }
     .countdown-box::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0; top: 50%;
-      height: 1px;
-      background: rgba(0,0,0,0.22);
-      pointer-events: none;
+      content: ''; position: absolute; left: 0; right: 0; top: 50%;
+      height: 1px; background: rgba(0,0,0,0.22); pointer-events: none;
     }
 
     .countdown-unit-label {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: 0.65rem;
-      letter-spacing: 0.22em;
-      color: #8b0000;
-      opacity: 0.6;
+      font-family: 'Noto Sans SC', sans-serif; font-size: 0.65rem;
+      letter-spacing: 0.22em; color: #8b0000; opacity: 0.6;
     }
 
     .countdown-sep {
-      font-family: 'Orbitron', monospace;
-      font-size: clamp(26px, 4.5vw, 50px);
-      color: #b30000;
-      font-weight: 700;
-      line-height: 1;
-      margin-top: clamp(12px, 2vw, 26px);
-      opacity: 0.45;
-      user-select: none;
-      flex-shrink: 0;
+      font-family: 'Orbitron', monospace; font-size: clamp(26px, 4.5vw, 50px);
+      color: #b30000; font-weight: 700; line-height: 1;
+      margin-top: clamp(12px, 2vw, 26px); opacity: 0.45;
+      user-select: none; flex-shrink: 0;
     }
 
     .countdown-finished {
-      font-family: 'Orbitron', monospace;
-      font-size: 1.5rem;
-      color: #b30000;
-      letter-spacing: 0.18em;
+      font-family: 'Orbitron', monospace; font-size: 1.5rem;
+      color: #b30000; letter-spacing: 0.18em;
     }
 
-    /* ===== AI 悬浮按钮 ===== */
     #aiBtn {
-      position: fixed;
-      bottom: 28px; right: 28px;
+      position: fixed; bottom: 28px; right: 28px;
       width: 62px; height: 62px;
       background: linear-gradient(135deg, #c0000a 0%, #7a0000 100%);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       box-shadow: 0 4px 20px rgba(140,0,0,0.45), 0 1px 4px rgba(0,0,0,0.18);
-      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
-                  box-shadow 0.22s ease;
-      z-index: 9999;
-      animation: aiBtnPulse 3s ease-in-out infinite;
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+      z-index: 9999; animation: aiBtnPulse 3s ease-in-out infinite;
     }
     #aiBtn:hover {
       transform: scale(1.1);
@@ -328,21 +227,16 @@
     }
     #aiBtn:active { transform: scale(0.96); }
     #aiBtn::before {
-      content: '';
-      position: absolute; inset: -4px;
-      border-radius: 50%;
-      border: 2px solid rgba(200,0,0,0.4);
-      animation: aiRingPulse 3s ease-in-out infinite;
+      content: ''; position: absolute; inset: -4px; border-radius: 50%;
+      border: 2px solid rgba(200,0,0,0.4); animation: aiRingPulse 3s ease-in-out infinite;
     }
     #aiBtn svg {
-      width: 28px; height: 28px;
-      fill: none; stroke: #fff;
+      width: 28px; height: 28px; fill: none; stroke: #fff;
       stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
       position: relative; z-index: 1;
     }
     #aiBtn::after {
-      content: '★';
-      position: absolute; top: -5px; right: -3px;
+      content: '★'; position: absolute; top: -5px; right: -3px;
       font-size: 13px; color: #ffd700; line-height: 1;
       filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
       animation: starSpin 6s linear infinite;
@@ -363,7 +257,6 @@
       100% { transform: rotate(360deg) scale(1); }
     }
 
-    /* ===== 响应式 ===== */
     @media (max-width: 768px) {
       .sidebar { width: 100%; }
       .flag-bg  { font-size: 150vw; }
@@ -372,28 +265,19 @@
       #aiBtn svg { width: 24px; height: 24px; }
     }
 
-    /* ===== 警告弹窗 ===== */
     #warnOverlay {
-      position: fixed; inset: 0;
-      background: rgba(80, 0, 0, 0.55);
-      backdrop-filter: blur(3px);
-      z-index: 99999;
+      position: fixed; inset: 0; background: rgba(80,0,0,0.55);
+      backdrop-filter: blur(3px); z-index: 99999;
       display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.4s ease;
-      pointer-events: none;
+      opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
     }
     #warnOverlay.show { opacity: 1; pointer-events: all; }
 
     #warnBox {
-      background: #fff5f5;
-      border: 2px solid #8b0000;
-      border-radius: 14px;
-      padding: 40px 36px 32px;
-      max-width: 480px; width: 90%;
-      position: relative;
+      background: #fff5f5; border: 2px solid #8b0000; border-radius: 14px;
+      padding: 40px 36px 32px; max-width: 480px; width: 90%; position: relative;
       box-shadow: 0 20px 60px rgba(100,0,0,0.35), 0 0 0 6px rgba(139,0,0,0.08);
-      text-align: center;
-      animation: warnPop 0.45s cubic-bezier(0.34,1.56,0.64,1);
+      text-align: center; animation: warnPop 0.45s cubic-bezier(0.34,1.56,0.64,1);
     }
     @keyframes warnPop {
       from { transform: scale(0.82) translateY(24px); opacity: 0; }
@@ -404,54 +288,27 @@
       font-size: 36px; color: #b30000; display: block; margin-bottom: 14px;
       animation: starSpin 6s linear infinite;
     }
-
     #warnBox h2 {
-      font-family: 'Noto Sans SC', sans-serif;
-      font-size: 1.15rem; font-weight: 700;
+      font-family: 'Noto Sans SC', sans-serif; font-size: 1.15rem; font-weight: 700;
       color: #7a0000; letter-spacing: 0.08em; margin-bottom: 18px;
     }
-    #warnBox h2::before, #warnBox h2::after {
-      content: " ★ "; color: #b30000; font-size: 0.75em;
-    }
-
-    #warnBox p {
-      font-size: 15px; line-height: 1.85; color: #3a0000;
-      font-family: 'Noto Sans SC', sans-serif;
-    }
-    #warnBox p strong {
-      color: #b30000; font-weight: 700;
-      background: #ffe0e0; padding: 1px 5px; border-radius: 4px;
-    }
-    #warnBox p a {
-      color: #8b0000; text-decoration: underline;
-      text-underline-offset: 3px; font-weight: 700;
-    }
+    #warnBox h2::before, #warnBox h2::after { content: " ★ "; color: #b30000; font-size: 0.75em; }
+    #warnBox p { font-size: 15px; line-height: 1.85; color: #3a0000; font-family: 'Noto Sans SC', sans-serif; }
+    #warnBox p strong { color: #b30000; font-weight: 700; background: #ffe0e0; padding: 1px 5px; border-radius: 4px; }
+    #warnBox p a { color: #8b0000; text-decoration: underline; text-underline-offset: 3px; font-weight: 700; }
     #warnBox p a:hover { color: #c0000a; }
 
-    #warnProgress {
-      margin-top: 24px;
-      height: 4px; border-radius: 2px;
-      background: #ffd6d6; overflow: hidden;
-    }
+    #warnProgress { margin-top: 24px; height: 4px; border-radius: 2px; background: #ffd6d6; overflow: hidden; }
     #warnProgressBar {
       height: 100%; width: 100%;
       background: linear-gradient(90deg, #b30000, #ff4040);
-      border-radius: 2px;
-      transform-origin: left;
-      transition: transform 1s linear;
+      border-radius: 2px; transform-origin: left; transition: transform 1s linear;
     }
-
-    #warnTimer {
-      margin-top: 8px;
-      font-size: 12px; color: #a05050; letter-spacing: 0.1em;
-      font-family: 'Orbitron', monospace;
-    }
-
+    #warnTimer { margin-top: 8px; font-size: 12px; color: #a05050; letter-spacing: 0.1em; font-family: 'Orbitron', monospace; }
     #warnClose {
       position: absolute; top: 14px; right: 16px;
       background: none; border: none; cursor: pointer;
-      font-size: 22px; color: #8b0000; line-height: 1;
-      transition: transform 0.2s, color 0.2s;
+      font-size: 22px; color: #8b0000; line-height: 1; transition: transform 0.2s, color 0.2s;
     }
     #warnClose:hover { transform: scale(1.2) rotate(90deg); color: #c0000a; }
   </style>
@@ -489,13 +346,9 @@
       <img src="aa.png">
     </div>
 
-    <!-- 先驱者标题：内容由 JS 延迟注入 -->
+    <!-- 以下三个元素内容全部由 JS 解码后注入，HTML 源码中为空 -->
     <div class="pioneer-heading" id="pioneerHeading"></div>
-
-    <!-- 正文：段落由 JS 延迟注入 -->
     <div class="story" id="storyBlock"></div>
-
-    <!-- 口号：内容由 JS 延迟注入 -->
     <div class="slogan" id="slogan"></div>
 
     <div class="countdown-wrap" id="countdownWrap">
@@ -533,7 +386,6 @@
     </svg>
   </div>
 
-  <!-- 警告弹窗 -->
   <div id="warnOverlay">
     <div id="warnBox">
       <button id="warnClose" title="关闭">✕</button>
@@ -575,17 +427,33 @@
     }
 
     /* =========================================================
-       4. 内容解码与注入
-       ─ xx段落以 base64(encodeURIComponent(JSON)) 存储
-       ─  1800ms 再解码注入，避免即时抓取
-       ─ 若 URL 含有效 token 参数则立即注入（适配 CF Worker 跳转）
+       4. 滚动淡入检查（全局，供注入函数调用）
+    ========================================================= */
+    function checkScroll() {
+      const vy = window.innerHeight - 100;
+      const sl = document.getElementById("slogan");
+      const cw = document.getElementById("countdownWrap");
+      if (sl && sl.getBoundingClientRect().top < vy) sl.classList.add("show");
+      if (cw && cw.getBoundingClientRect().top < vy + 40) cw.classList.add("show");
+      document.querySelectorAll(".story p").forEach(p => {
+        if (p.getBoundingClientRect().top < window.innerHeight - 80) p.classList.add("show");
+      });
+    }
+
+    window.addEventListener("scroll", checkScroll);
+
+    /* =========================================================
+       5. 内容解码与注入
+          ┌ 正文以 base64(encodeURIComponent(JSON)) 存储
+          ├ 有效 tk（CF Worker 跳转）→ 立即解码渲染
+          └ 无 tk → 延迟 1800ms 后再注入
     ========================================================= */
     (function () {
 
-      // ── 编码内容库（由构建脚本生成，勿手动修改明文）──
-      const _d = "JTdCJTIycCUyMiUzQSUyMiVFNSU4MSU5QSVFNCVCOCU4MCVFNCVCRCU4RCVFNSU4NSU4OCVFOSVBOSVCMSVFOCU4MCU4NSUyMiUyQyUyMnMlMjIlM0ElMjIlRTUlOEElQTAlRTUlODUlQTUlRTUlOUMlQjAlRTYlOTYlQjclRTclQkIlODQlRTclQkIlODclRTUlQkIlQkElRTglQUUlQkUlRUYlQkMlOEMlRTglQkYlODglRTUlOTAlOTElRTYlOTQlQjclRTUlODUlOUElRTUlOEMlOTYlMjIlMkMlMjJsJTIyJTNBJTVCJTIyJUU1JTlDJUE4JUU4JTgxJTk0JUU1JTkwJTg4JUU1JUI3JUE2JUU2JUI0JUJFJUU0JUI4JUFEJUU5JTk3JUI0JUU1JUIxJTg1JUU3JUJCJTlGJUU2JUIyJUJCJUU1JTlDJUIwJUU0JUJEJThEJUU3JTlBJTg0JUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JTIyJTJDJTIyJUU1JUIwJTg2JUU0JUI4JThEJUU0JUJDJTlBJUU1JTlDJUE4JUU3JUJFJUE0JUU0JUJDJTk3JU00JUI4JUFEJUU5JTk3JUI0JUU2JTlDJTg5JUU0JUJCJTgwJUU0JUI5JTg4JUU1JUI4JTgyJUU1JTlDJUJBJTIyJTJDJTIyJUU1JTlCJUEwJUU0JUI4JUJBJUU3JUJFJUE0JUU0JUJDJTk3JUU2JUEwJUI5JUU2JTlDJUFDJUU1JUIwJUIxJUU0JUI4JThEJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JTIyJTJDJTIyJUU4JUFFJUE5JUU2JTg4JTkxJUU0JUJCJUFDJUU4JUFFJUIwJUU0JUJEJThGJUU2JUFGJTlCJUU0JUI4JUJCJUU1JUI4JUFEJUU3JTlBJTg0JUU4JUJGJTk5JUU1JThGJUE1JUU3JUFFJUI0JUU4JUE4JTgwJUU1JTkwJUE3JTIyJTJDJTIyJUU0JUJGJUFFJUU2JUFEJUEzJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU1JTkyJThDJUU2JTlDJUJBJUU0JUJDJTlBJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU2JTg5JThEJUU0JUJDJTlBJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JTIyJTJDJTIyJUU4JTgwJThDJUU2JTk3JUEwJUU0JUJBJUE3JUU5JTk4JUI2JUU3JUJBJUE3JUU1JTkyJThDJUU1JTg1JUIxJUU0JUJBJUE3JUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU2JUIwJUI4JUU4JUJGJTlDJUU2JTk4JUFGJUU0JUI5JTkwJUU4JUE3JTgyJUU2JUI0JUJFJTIyJTJDJTIyJUU1JTlCJUEwJUU0JUI4JUJBJUU2JTlDJUFBJUU2JTlEJUE1JUU2JTk4JUFGJUU2JTg4JTkxJUU0JUJCJUFDJUU3JTlBJTg0JUUyJTgwJTk0JUUyJTgwJTk0JUU4JUJGJTk5JUU2JTk4JUFGJUU1JUJGJTg1JUU3JTg0JUI2JUU3JTlBJTg0JTIyJTJDJTIyJUU1JThGJUFBJUU4JUE2JTgxJUU2JTg4JTkxJUU0JUJCJUFDJUU4JTgzJUJEJUU1JTlEJTlBJUU2JThDJTgxJUU4JUI3JUFGJUE3JUJBJUJGJUVGJUJDJThDJUU1JTlEJTlBJUU1JUFFJTlBJUU0JUI4JThEJUU3JUE3JUJCJUU1JTlDJUIwJUU4JUI1JUIwJUU0JUI4JThCJUU1JThFJUJCJTIyJTJDJTIyJUU3JUJFJUE0JUU0JUJDJTk3JUU0JUJCJThFJUU2JTlEJUE1JUU2JUIyJUExJUU2JTlDJTg5JUU0JUI5JTlGJUU2JUIwJUI4JUU4JUJGJTlDJUU0JUI4JThEJUU0JUJDJTlBJUU1JUEwJTk1JUU1JTg1JUE1JUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU2JUIzJUE1JUU2JUJEJUFEJTIyJTJDJTIyJUU2JTlDJTg5JUU0JUJBJUJBJUU4JUFGJUI0JUU0JUJCJTk2JUU0JUJCJUFDJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU3JTlBJTg0JUUzJTgwJTgxJUU2JTk3JUEwJUU1JThBJTlCJUU3JTlBJTg0JUVGJUJDJThDJUU4JUJGJTk5JUU1JUFFJTlFJUU5JTk5JTg1JUU0JUI4JThBJUU2JTk4JUFGJUU4JThEJTkyJUU4JUIwJUFDJUU3JTlBJTg0JUU4JUFGJUJEJUU4JUIwJUE0JTIyJTJDJTIyJUU3JUJFJUE0JUU0JUJDJTk3JUU2JUIwJUI4JUU4JUJGJTlDJUU2JTk4JUFGJUU2JTg4JTk4JUU2JTk2JTk3JUU3JTlBJTg0JTIyJTJDJTIyJUU0JUJEJTg2JUU2JTk4JUFGJUU3JUJFJUE0JUU0JUJDJTk3JUU2JTk2JTk3JUU0JUJBJTg5JUU5JTlDJTgwJUU4JUE2JTgxJUU5JUEyJTg2JUU1JUFGJUJDJUVGJUJDJThDJUU5JTlDJTgwJUU4JUE2JTgxJUU0JUI4JTgwJUU0JUI4JUFBJUU1JTg1JTlBJTIyJTVEJTdE";
+      /* ── 编码内容库（重新生成的正确版本，勿手动改明文）── */
+      var _d = "JTdCJTIycCUyMiUzQSUyMiVFNSU4MSU5QSVFNCVCOCU4MCVFNCVCRCU4RCVFNSU4NSU4OCVFOSVBOSVCMSVFOCU4MCU4NSUyMiUyQyUyMnMlMjIlM0ElMjIlRTUlOEElQTAlRTUlODUlQTUlRTUlOUMlQjAlRTYlOTYlQjklRTclQkIlODQlRTclQkIlODclRTUlQkIlQkElRTglQUUlQkUlRUYlQkMlOEMlRTglQkYlODglRTUlOTAlOTElRTYlOTQlQkYlRTUlODUlOUElRTUlOEMlOTYlMjIlMkMlMjJsJTIyJTNBJTVCJTIyJUU1JTlDJUE4JUU4JTgxJTk0JUU1JTkwJTg4JUU1JUI3JUE2JUU2JUI0JUJFJUU0JUI4JUFEJUU5JTk3JUI0JUU1JUIxJTg1JUU3JUJCJTlGJUU2JUIyJUJCJUU1JTlDJUIwJUU0JUJEJThEJUU3JTlBJTg0JUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JTIyJTJDJTIyJUU1JUIwJTg2JUU0JUI4JThEJUU0JUJDJTlBJUU1JTlDJUE4JUU3JUJFJUE0JUU0JUJDJTk3JUU0JUI4JUFEJUU5JTk3JUI0JUU2JTlDJTg5JUU0JUJCJTgwJUU0JUI5JTg4JUU1JUI4JTgyJUU1JTlDJUJBJTIyJTJDJTIyJUU1JTlCJUEwJUU0JUI4JUJBJUU3JUJFJUE0JUU0JUJDJTk3JUU2JUEwJUI5JUU2JTlDJUFDJUU1JUIwJUIxJUU0JUI4JThEJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JTIyJTJDJTIyJUU4JUFFJUE5JUU2JTg4JTkxJUU0JUJCJUFDJUU4JUFFJUIwJUU0JUJEJThGJUU2JUFGJTlCJUU0JUI4JUJCJUU1JUI4JUFEJUU3JTlBJTg0JUU4JUJGJTk5JUU1JThGJUE1JUU3JUFFJUI0JUU4JUE4JTgwJUU1JTkwJUE3JTIyJTJDJTIyJUU0JUJGJUFFJUU2JUFEJUEzJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU1JTkyJThDJUU2JTlDJUJBJUU0JUJDJTlBJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU2JTg5JThEJUU0JUJDJTlBJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JTIyJTJDJTIyJUU4JTgwJThDJUU2JTk3JUEwJUU0JUJBJUE3JUU5JTk4JUI2JUU3JUJBJUE3JUU1JTkyJThDJUU1JTg1JUIxJUU0JUJBJUE3JUU0JUI4JUJCJUU0JUI5JTg5JUU4JTgwJTg1JUU2JUIwJUI4JUU4JUJGJTlDJUU2JTk4JUFGJUU0JUI5JTkwJUU4JUE3JTgyJUU2JUI0JUJFJTIyJTJDJTIyJUU1JTlCJUEwJUU0JUI4JUJBJUU2JTlDJUFBJUU2JTlEJUE1JUU2JTk4JUFGJUU2JTg4JTkxJUU0JUJCJUFDJUU3JTlBJTg0JUUyJTgwJTk0JUUyJTgwJTk0JUU4JUJGJTk5JUU2JTk4JUFGJUU1JUJGJTg1JUU3JTg0JUI2JUU3JTlBJTg0JTIyJTJDJTIyJUU1JThGJUFBJUU4JUE2JTgxJUU2JTg4JTkxJUU0JUJCJUFDJUU4JTgzJUJEJUU1JTlEJTlBJUU2JThDJTgxJUU4JUI3JUFGJUU3JUJBJUJGJUVGJUJDJThDJUU1JTlEJTlBJUU1JUFFJTlBJUU0JUI4JThEJUU3JUE3JUJCJUU1JTlDJUIwJUU4JUI1JUIwJUU0JUI4JThCJUU1JThFJUJCJTIyJTJDJTIyJUU3JUJFJUE0JUU0JUJDJTk3JUU0JUJCJThFJUU2JTlEJUE1JUU2JUIyJUExJUU2JTlDJTg5JUU0JUI5JTlGJUU2JUIwJUI4JUU4JUJGJTlDJUU0JUI4JThEJUU0JUJDJTlBJUU1JUEwJTk1JUU1JTg1JUE1JUU2JTgyJUIyJUU4JUE3JTgyJUU0JUI4JUJCJUU0JUI5JTg5JUU2JUIzJUE1JUU2JUJEJUFEJTIyJTJDJTIyJUU2JTlDJTg5JUU0JUJBJUJBJUU4JUFGJUI0JUU0JUJCJTk2JUU0JUJCJUFDJUU2JTk4JUFGJUU2JTgyJUIyJUU4JUE3JTgyJUU3JTlBJTg0JUUzJTgwJTgxJUU2JTk3JUEwJUU1JThBJTlCJUU3JTlBJTg0JUVGJUJDJThDJUU4JUJGJTk5JUU1JUFFJTlFJUU5JTk5JTg1JUU0JUI4JThBJUU2JTk4JUFGJUU4JThEJTkyJUU4JUIwJUFDJUU3JTlBJTg0JUU4JUFGJUJEJUU4JUIwJUE0JTIyJTJDJTIyJUU3JUJFJUE0JUU0JUJDJTk3JUU2JUIwJUI4JUU4JUJGJTlDJUU2JTk4JUFGJUU2JTg4JTk4JUU2JTk2JTk3JUU3JTlBJTg0JTIyJTJDJTIyJUU0JUJEJTg2JUU2JTk4JUFGJUU3JUJFJUE0JUU0JUJDJTk3JUU2JTk2JTk3JUU0JUJBJTg5JUU5JTlDJTgwJUU4JUE2JTgxJUU5JUEyJTg2JUU1JUFGJUJDJUVGJUJDJThDJUU5JTlDJTgwJUU4JUE2JTgxJUU0JUI4JTgwJUU0JUI4JUFBJUU1JTg1JTlBJTIyJTVEJTdE";
 
-      // ── 解码函数 ──
+      /* ── 解码 ── */
       function _dec(s) {
         try {
           return JSON.parse(decodeURIComponent(atob(s)));
@@ -594,126 +462,92 @@
         }
       }
 
-      // ── 注入函数 ──
+      /* ── 注入所有内容 ── */
       function injectContent() {
-  const c = _dec(_d);
-  if (!c) return;
+        var c = _dec(_d);
+        if (!c) return;
 
-  // 先驱者标题
-  const ph = document.getElementById("pioneerHeading");
-  if (ph) {
-    ph.textContent = c.p;
-    // 强制触发重排后再加 show，确保 transition 生效
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => ph.classList.add("show"));
-    });
-  }
+        // 先驱者标题
+        var ph = document.getElementById("pioneerHeading");
+        if (ph) {
+          ph.textContent = c.p;
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              ph.classList.add("show");
+            });
+          });
+        }
 
-  // 口号
-  const sl = document.getElementById("slogan");
-  if (sl) {
-    sl.textContent = c.s;
-  }
+        // 口号
+        var sl = document.getElementById("slogan");
+        if (sl) sl.textContent = c.s;
 
-  // 正文段落
-  const story = document.getElementById("storyBlock");
-  if (story && Array.isArray(c.l)) {
-    c.l.forEach((line, i) => {
-      const p = document.createElement("p");
-      p.textContent = line;
-      p.style.transitionDelay = (i * 0.08) + "s";
-      story.appendChild(p);
-    });
-  }
+        // 正文段落
+        var story = document.getElementById("storyBlock");
+        if (story && Array.isArray(c.l)) {
+          c.l.forEach(function (line, i) {
+            var p = document.createElement("p");
+            p.textContent = line;
+            p.style.transitionDelay = (i * 0.08) + "s";
+            story.appendChild(p);
+          });
+        }
 
-  // 等 DOM 渲染完成后再检查滚动位置
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      checkScroll();
-      // 如果用户已经在页面底部（比如刷新后），强制让所有元素显示
-      forceShowAll();
-    });
-  });
-}
-
-// 对已经在视口内或接近视口的元素，直接强制显示
-function forceShowAll() {
-  const vh = window.innerHeight;
-  [
-    document.getElementById("slogan"),
-    document.getElementById("countdownWrap"),
-    ...document.querySelectorAll(".story p")
-  ].forEach(el => {
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    // 只要元素不是远在视口下方（超过 1.5 屏）就显示
-    if (rect.top < vh * 1.5) {
-      el.classList.add("show");
-    }
-  });
-}
-
-       
-
-        // 注入后触发一次滚动检查
-        checkScroll();
+        // DOM 写入完毕后再做滚动检查 + 强制显示视口内元素
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            checkScroll();
+            forceShowVisible();
+          });
+        });
       }
 
-      // ── 判断是否携带有效 token（CF Worker 跳转过来时立即渲染）──
+      /* ── 对视口内（及 1.5 屏以内）的元素强制显示 ── */
+      function forceShowVisible() {
+        var vh = window.innerHeight;
+        var targets = [
+          document.getElementById("slogan"),
+          document.getElementById("countdownWrap")
+        ].concat(Array.from(document.querySelectorAll(".story p")));
+
+        targets.forEach(function (el) {
+          if (!el) return;
+          if (el.getBoundingClientRect().top < vh * 1.5) {
+            el.classList.add("show");
+          }
+        });
+      }
+
+      /* ── 检测 URL 是否含有效 token（CF Worker 跳转附带）── */
       function hasValidToken() {
         try {
-          const params = new URLSearchParams(window.location.search);
-          const tk = params.get("tk") || params.get("token");
-          // token 存在且长度合理（CF Worker 生成的 token 通常 ≥16 位）
+          var params = new URLSearchParams(window.location.search);
+          var tk = params.get("tk") || params.get("token");
           return tk && tk.length >= 16;
         } catch (e) {
           return false;
         }
       }
 
-      // ── 延迟策略：有 token 立即注入，否则延迟 1800ms ──
-      const delay = hasValidToken() ? 0 : 1800;
-      setTimeout(injectContent, delay);
+      /* ── 有 token 立即注入，否则延迟 1800ms ── */
+      setTimeout(injectContent, hasValidToken() ? 0 : 1800);
 
     })();
-
-    /* =========================================================
-       5. 滚动淡入（口号 + 倒计时 + 正文）
-    ========================================================= */
-    const slogan        = document.getElementById("slogan");
-    const countdownWrap = document.getElementById("countdownWrap");
-
-    function checkScroll() {
-      const vy = window.innerHeight - 100;
-      if (slogan.getBoundingClientRect().top < vy)
-        slogan.classList.add("show");
-      if (countdownWrap.getBoundingClientRect().top < vy + 40)
-        countdownWrap.classList.add("show");
-
-      const storyLines = document.querySelectorAll(".story p");
-      const triggerY   = window.innerHeight - 80;
-      storyLines.forEach(p => {
-        if (p.getBoundingClientRect().top < triggerY)
-          p.classList.add("show");
-      });
-    }
-
-    window.addEventListener("scroll", checkScroll);
 
     /* =========================================================
        6. 倒计时
     ========================================================= */
     function pad(n) { return String(n).padStart(2, "0"); }
     function tick() {
-      const now    = new Date();
-      const target = new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
-      const diff   = target - now;
+      var now    = new Date();
+      var target = new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
+      var diff   = target - now;
       if (diff <= 0) {
         document.getElementById("countdownGrid").innerHTML =
           '<div class="countdown-finished">★ 新年快乐 ★</div>';
         return;
       }
-      const s = Math.floor(diff / 1000);
+      var s = Math.floor(diff / 1000);
       document.getElementById("cd-days").textContent    = pad(Math.floor(s / 86400));
       document.getElementById("cd-hours").textContent   = pad(Math.floor((s % 86400) / 3600));
       document.getElementById("cd-minutes").textContent = pad(Math.floor((s % 3600) / 60));
@@ -725,7 +559,7 @@ function forceShowAll() {
     /* =========================================================
        7. AI 按钮
     ========================================================= */
-    document.getElementById("aiBtn").addEventListener("click", () => {
+    document.getElementById("aiBtn").addEventListener("click", function () {
       window.open("https://huggingface.co/spaces/rofg2/rotai", "_blank");
     });
 
@@ -733,8 +567,8 @@ function forceShowAll() {
        8. 火流星特效（持续 15 秒）
     ========================================================= */
     (function () {
-      const canvas = document.getElementById("meteorCanvas");
-      const ctx    = canvas.getContext("2d");
+      var canvas = document.getElementById("meteorCanvas");
+      var ctx    = canvas.getContext("2d");
 
       function resize() {
         canvas.width  = window.innerWidth;
@@ -743,49 +577,48 @@ function forceShowAll() {
       resize();
       window.addEventListener("resize", resize);
 
-      const DURATION   = 15000;
-      const SPAWN_RATE = 220;
-      const startTime  = performance.now();
-      let   lastSpawn  = 0;
-      const meteors    = [];
+      var DURATION   = 15000;
+      var SPAWN_RATE = 220;
+      var startTime  = performance.now();
+      var lastSpawn  = 0;
+      var meteors    = [];
 
-      const COLORS = [
+      var COLORS = [
         [255, 200,  40],
         [255, 140,  20],
         [255,  60,  20],
-        [255, 240, 180],
+        [255, 240, 180]
       ];
 
       function spawnMeteor() {
-        const fromRight = Math.random() > 0.3;
-        const x = fromRight
+        var fromRight = Math.random() > 0.3;
+        var x = fromRight
           ? canvas.width * (0.5 + Math.random() * 0.7)
           : canvas.width * (Math.random() * 0.5);
-        const y       = Math.random() * canvas.height * 0.55;
-        const angle   = (Math.PI / 4) + (Math.random() - 0.5) * 0.5;
-        const speed   = 12 + Math.random() * 18;
-        const length  = 100 + Math.random() * 200;
-        const life    = 0;
-        const maxLife = 0.6 + Math.random() * 0.4;
-        const col     = COLORS[Math.floor(Math.random() * COLORS.length)];
-        meteors.push({ x, y, angle, speed, length, life, maxLife, col });
+        var y       = Math.random() * canvas.height * 0.55;
+        var angle   = (Math.PI / 4) + (Math.random() - 0.5) * 0.5;
+        var speed   = 12 + Math.random() * 18;
+        var length  = 100 + Math.random() * 200;
+        var maxLife = 0.6 + Math.random() * 0.4;
+        var col     = COLORS[Math.floor(Math.random() * COLORS.length)];
+        meteors.push({ x: x, y: y, angle: angle, speed: speed, length: length, life: 0, maxLife: maxLife, col: col });
       }
 
       function drawMeteor(m, alpha) {
-        const tailX = m.x - Math.cos(m.angle) * m.length;
-        const tailY = m.y - Math.sin(m.angle) * m.length;
-        const grad  = ctx.createLinearGradient(tailX, tailY, m.x, m.y);
-        const [r, g, b] = m.col;
+        var tailX = m.x - Math.cos(m.angle) * m.length;
+        var tailY = m.y - Math.sin(m.angle) * m.length;
+        var grad  = ctx.createLinearGradient(tailX, tailY, m.x, m.y);
+        var r = m.col[0], g = m.col[1], b = m.col[2];
 
-        grad.addColorStop(0,   `rgba(${r},${g},${b},0)`);
-        grad.addColorStop(0.6, `rgba(${r},${g},${b},${alpha * 0.4})`);
-        grad.addColorStop(1,   `rgba(255,255,255,${alpha})`);
+        grad.addColorStop(0,   "rgba(" + r + "," + g + "," + b + ",0)");
+        grad.addColorStop(0.6, "rgba(" + r + "," + g + "," + b + "," + (alpha * 0.4) + ")");
+        grad.addColorStop(1,   "rgba(255,255,255," + alpha + ")");
 
         ctx.save();
         ctx.globalCompositeOperation = "lighter";
         ctx.strokeStyle = grad;
         ctx.lineWidth   = 2.5;
-        ctx.shadowColor = `rgba(${r},${g},${b},${alpha})`;
+        ctx.shadowColor = "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
         ctx.shadowBlur  = 14;
         ctx.beginPath();
         ctx.moveTo(tailX, tailY);
@@ -794,16 +627,16 @@ function forceShowAll() {
 
         ctx.beginPath();
         ctx.arc(m.x, m.y, 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fillStyle = "rgba(255,255,255," + alpha + ")";
         ctx.shadowBlur = 20;
         ctx.fill();
         ctx.restore();
       }
 
-      let prevTime = performance.now();
+      var prevTime = performance.now();
 
       function animate(now) {
-        const elapsed = now - startTime;
+        var elapsed = now - startTime;
 
         if (elapsed > DURATION && meteors.length === 0) {
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -811,7 +644,7 @@ function forceShowAll() {
           return;
         }
 
-        const dt = (now - prevTime) / 1000;
+        var dt = (now - prevTime) / 1000;
         prevTime = now;
 
         if (elapsed < DURATION && now - lastSpawn > SPAWN_RATE) {
@@ -822,14 +655,14 @@ function forceShowAll() {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = meteors.length - 1; i >= 0; i--) {
-          const m = meteors[i];
+        for (var i = meteors.length - 1; i >= 0; i--) {
+          var m = meteors[i];
           m.life += dt;
           m.x    += Math.cos(m.angle) * m.speed;
           m.y    += Math.sin(m.angle) * m.speed;
 
-          const progress = m.life / m.maxLife;
-          let alpha;
+          var progress = m.life / m.maxLife;
+          var alpha;
           if (progress < 0.15)     alpha = progress / 0.15;
           else if (progress < 0.7) alpha = 1;
           else                     alpha = 1 - (progress - 0.7) / 0.3;
@@ -852,13 +685,13 @@ function forceShowAll() {
        9. 警告弹窗
     ========================================================= */
     (function () {
-      const overlay    = document.getElementById("warnOverlay");
-      const closeBtn   = document.getElementById("warnClose");
-      const bar        = document.getElementById("warnProgressBar");
-      const timerLabel = document.getElementById("warnTimer");
-      const TOTAL      = 17;
-      let   remaining  = TOTAL;
-      let   ticker;
+      var overlay    = document.getElementById("warnOverlay");
+      var closeBtn   = document.getElementById("warnClose");
+      var bar        = document.getElementById("warnProgressBar");
+      var timerLabel = document.getElementById("warnTimer");
+      var TOTAL      = 17;
+      var remaining  = TOTAL;
+      var ticker;
 
       function closeWarn() {
         overlay.classList.remove("show");
@@ -867,21 +700,21 @@ function forceShowAll() {
 
       function startCountdown() {
         bar.style.transform = "scaleX(1)";
-        ticker = setInterval(() => {
+        ticker = setInterval(function () {
           remaining--;
-          bar.style.transform = `scaleX(${remaining / TOTAL})`;
-          timerLabel.textContent = `${remaining} 秒后自动关闭`;
+          bar.style.transform = "scaleX(" + (remaining / TOTAL) + ")";
+          timerLabel.textContent = remaining + " 秒后自动关闭";
           if (remaining <= 0) closeWarn();
         }, 1000);
       }
 
-      setTimeout(() => {
+      setTimeout(function () {
         overlay.classList.add("show");
         startCountdown();
       }, 3000);
 
       closeBtn.addEventListener("click", closeWarn);
-      overlay.addEventListener("click", e => {
+      overlay.addEventListener("click", function (e) {
         if (e.target === overlay) closeWarn();
       });
     })();
