@@ -1,5 +1,4 @@
 name: Mirror Sync
-
 on:
   schedule:
     - cron: '0 2 * * *'   # 每天 UTC 02:00 自动执行
