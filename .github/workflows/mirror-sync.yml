@@ -1,0 +1,24 @@
+name: Mirror Sync
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # 每天 UTC 02:00 执行（可按需修改）
+  push:
+    branches:
+      - main               # 也可以在每次 push 时触发
+  workflow_dispatch:       # 允许手动触发
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 必须拉取完整历史，否则 mirror 会丢数据
+
+      - name: Push mirror
+        env:
+          MIRROR_URL: https://${{ secrets.MIRROR_TOKEN }}@github.com/your-org/mirror-repo.git
+        run: |
+          git push --mirror "$MIRROR_URL"
