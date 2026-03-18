@@ -129,6 +129,11 @@ async function loadPosts(key) {
             const a  = document.createElement("a");
             a.href      = `?cat=${key}&post=${encodeURIComponent(name)}`;
             a.innerText = title;
+            a.addEventListener("click", function(e) {
+              e.stopPropagation();
+              e.preventDefault();
+              window.location.href = a.href; // 强制 WebView 跳转
+            });
             list.appendChild(a);
         }
     } catch (e) {
