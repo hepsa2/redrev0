@@ -794,15 +794,76 @@
     function loadArticleContent(index, link, fullContent) {
       const contentEl = document.getElementById(`content-${index}`);
       
-      // 优先使用RSS feed中的完整内容
+      // 如果有RSS中的内容，需要先清理
       if (fullContent && fullContent.trim().length > 0) {
-        // 直接使用RSS中的HTML内容
-        articleContents[index] = fullContent;
-        contentEl.innerHTML = fullContent;
+        // 创建临时容器来解析HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = fullContent;
+        
+        // 移除所有不需要的元素
+        tempDiv.querySelectorAll('script, style, nav, header, footer').forEach(el => el.remove());
+        
+        // 移除按钮类元素
+        tempDiv.querySelectorAll('button, .menu-btn, #menuBtn, #aiBtn, .sidebar').forEach(el => el.remove());
+        tempDiv.querySelectorAll('[id*="Btn"], [class*="btn"]').forEach(el => el.remove());
+        
+        // 移除canvas
+        tempDiv.querySelectorAll('canvas').forEach(el => el.remove());
+        
+        // 移除背景装饰
+        tempDiv.querySelectorAll('.flag-bg, [class*="bg"]').forEach(el => {
+          if (!el.textContent.trim()) el.remove();
+        });
+        
+        // 移除所有图片（除非它们在文章内容中）
+        tempDiv.querySelectorAll('img').forEach(img => {
+          const src = img.getAttribute('src') || '';
+          const alt = img.getAttribute('alt') || '';
+          // 如果是装饰性图片、logo或不在文章域名下的图片，移除
+          if (!src || src.includes('logo') || src.includes('icon') || 
+              (!src.startsWith('http') && !src.startsWith('/')) ||
+              (src.startsWith('http') && !src.includes('paper.wf'))) {
+            img.remove();
+          }
+        });
+        
+        // 移除SVG
+        tempDiv.querySelectorAll('svg').forEach(el => el.remove());
+        
+        // 移除标题（已在卡片中显示）
+        tempDiv.querySelectorAll('h1').forEach(el => el.remove());
+        
+        // 移除空的div
+        tempDiv.querySelectorAll('div').forEach(div => {
+          if (!div.textContent.trim() && !div.querySelector('img')) {
+            div.remove();
+          }
+        });
+        
+        // 获取清理后的内容
+        let cleanedHTML = tempDiv.innerHTML.trim();
+        
+        // 如果清理后内容太短，说明提取失败
+        if (cleanedHTML.length < 50) {
+          // 尝试直接fetch文章页面
+          fetchArticlePage(index, link, contentEl);
+          return;
+        }
+        
+        // 缓存并显示内容
+        articleContents[index] = cleanedHTML;
+        contentEl.innerHTML = cleanedHTML;
         return;
       }
       
-      // 如果RSS中没有内容，尝试fetch文章页面
+      // 如果RSS中没有内容，fetch文章页面
+      fetchArticlePage(index, link, contentEl);
+    }
+    
+    /* =========================================================
+       8. 从文章页面获取内容（备用方法）
+    ========================================================= */
+    function fetchArticlePage(index, link, contentEl) {
       fetch(link)
         .then(response => response.text())
         .then(html => {
@@ -816,51 +877,33 @@
           // 如果没找到，尝试其他选择器
           if (!content) {
             content = doc.querySelector('article .e-content') || 
-                     doc.querySelector('article') ||
-                     doc.querySelector('.post-body') ||
-                     doc.querySelector('.e-content');
+                     doc.querySelector('.e-content') ||
+                     doc.querySelector('article');
           }
           
           if (content) {
-            // 克隆内容以避免修改原始DOM
+            // 克隆内容
             const contentClone = content.cloneNode(true);
             
-            // 移除标题（因为已在卡片中显示）
+            // 移除标题
             contentClone.querySelectorAll('h1, h2.post-title').forEach(el => el.remove());
             
-            // 移除可能的导航、页脚等
-            contentClone.querySelectorAll('nav, header, footer, .nav, .header, .footer').forEach(el => el.remove());
-            
-            // 移除script和style标签
-            contentClone.querySelectorAll('script, style').forEach(el => el.remove());
-            
-            // 移除可能的图片（如果是index.html的图片）
-            // 只保留文章正文中的图片
-            const images = contentClone.querySelectorAll('img');
-            images.forEach(img => {
-              // 如果图片src不是相对路径或不在文章域名下，移除
-              const src = img.getAttribute('src') || '';
-              if (src.includes('index.html') || !src.includes('paper.wf')) {
-                img.remove();
-              }
-            });
+            // 移除导航等
+            contentClone.querySelectorAll('nav, header, footer, script, style').forEach(el => el.remove());
             
             // 获取处理后的HTML
             let processedHTML = contentClone.innerHTML.trim();
             
-            // 如果内容太短（可能提取错误），显示错误
+            // 如果内容太短，显示错误
             if (processedHTML.length < 50) {
               contentEl.innerHTML = '<div class="content-error">★ 无法正确加载文章内容，请点击"阅读全文"查看完整文章 ★</div>';
               return;
             }
             
-            // 缓存内容
+            // 缓存并显示
             articleContents[index] = processedHTML;
-            
-            // 显示内容
-            contentEl.innerHTML = articleContents[index];
+            contentEl.innerHTML = processedHTML;
           } else {
-            console.error('未找到文章内容容器');
             contentEl.innerHTML = '<div class="content-error">★ 无法定位文章内容，请点击"阅读全文"查看 ★</div>';
           }
         })
@@ -871,7 +914,7 @@
     }
 
     /* =========================================================
-       8. 分页控件渲染
+       9. 分页控件渲染
           · 总页数 ≤ 7 → 显示全部页码
           · 总页数 > 7 → 首尾各 1，当前页两侧各 1，其余省略号
     ========================================================= */
@@ -922,14 +965,14 @@
     }
 
     /* =========================================================
-       9. AI 按钮
+       10. AI 按钮
     ========================================================= */
     document.getElementById("aiBtn").addEventListener("click", () => {
       window.open("https://huggingface.co/spaces/rofg2/rotai", "_blank");
     });
 
     /* =========================================================
-       10. 火流星特效（持续 15 秒）
+       11. 火流星特效（持续 15 秒）
     ========================================================= */
     (function () {
       const canvas = document.getElementById("meteorCanvas");
