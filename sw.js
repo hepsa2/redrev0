@@ -1,5 +1,5 @@
 // 缓存版本（每次更新记得改这里）
-const CACHE_NAME = 'app-cache-v1';
+const CACHE_NAME = 'app-cache-v2';
 
 // 需要预缓存的页面
 const URLS_TO_CACHE = [
