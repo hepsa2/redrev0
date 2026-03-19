@@ -4,10 +4,7 @@ const CACHE_NAME = 'app-cache-v1';
 // 需要预缓存的页面
 const URLS_TO_CACHE = [
   '/',
-  '/index.html',
-  '/blog.html',
-  '/meteor.html',
-  '/txt.html'
+  '/index.html'
 ];
 
 // =======================
