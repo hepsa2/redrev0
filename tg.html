@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电报频道</title>
+<style>
+:root{
+    --red:#b30000;
+    --lightred:#ffd6d6;
+}
+body{
+    margin:0;
+    background:var(--lightred);
+    color:#222;
+    font-family:"Noto Sans SC",system-ui;
+    overflow-x:hidden;
+}
+/* 背景红星 */
+.star-bg{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:120vw;
+    color:#ffd700;
+    opacity:0.08;
+    z-index:-1;
+    pointer-events:none;
+}
+/* 页面容器 */
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:30px 20px;
+}
+/* 返回按钮 */
+.back{margin-bottom:20px;}
+.back a{
+    color:#900;
+    text-decoration:none;
+    font-size:18px;
+}
+.back a:hover{color:#b30000;}
+/* 标题 */
+h1{text-align:center;margin-bottom:15px;color:#8b0000;}
+/* 注释说明 */
+.notice{
+    text-align:center;
+    margin-bottom:30px;
+    padding:15px;
+    background:#fff0f0;
+    border-radius:8px;
+    font-size:16px;
+    line-height:1.6;
+}
+.notice a{
+    color:#b30000;
+    text-decoration:underline;
+    font-weight:bold;
+}
+.notice a:hover{
+    color:#8b0000;
+}
+/* 频道卡片 */
+.channel{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:15px;
+    box-shadow:0 6px 16px rgba(0,0,0,0.15);
+    transition:transform 0.2s, box-shadow 0.2s;
+}
+.channel:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+.channel a{
+    display:block;
+    color:#333;
+    text-decoration:none;
+    font-size:18px;
+}
+.channel a:hover{
+    color:#b30000;
+}
+.channel-name{
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:8px;
+    color:#8b0000;
+}
+.channel-link{
+    font-size:14px;
+    color:#666;
+    word-break:break-all;
+}
+.telegram-icon{
+    display:inline-block;
+    margin-right:8px;
+    font-size:22px;
+}
+/* 手机适配 */
+@media(max-width:600px){
+    .container{padding:20px 15px;}
+    .channel a{font-size:16px;}
+    .channel-name{font-size:18px;}
+    .notice{font-size:14px;}
+}
+</style>
+</head>
+<body>
+<div class="star-bg">★</div>
+<div class="container">
+    <div class="back"><a href="../index.html">← 返回首页</a></div>
+    <h1>电报频道</h1>
+    
+    <div class="notice">
+        ⚠️ 请开启代理或VPN访问，如果不知道什么是代理/VPN，<a href="../network.html">点击跳转网络安全普及</a>
+    </div>
+
+    <div class="channel">
+        <a href="https://t.me/s/novemberreviewcommunist" target="_blank">
+            <div class="channel-name"><span class="telegram-icon">📱</span>十一月评论</div>
+            <div class="channel-link">https://t.me/s/novemberreviewcommunist</div>
+        </a>
+    </div>
+
+    <div class="channel">
+        <a href="https://t.me/s/chiyepublic" target="_blank">
+            <div class="channel-name"><span class="telegram-icon">📱</span>赤夜社发布处</div>
+            <div class="channel-link">https://t.me/s/chiyepublic</div>
+        </a>
+    </div>
+
+    <div class="channel">
+        <a href="https://t.me/s/zhongguogongrenjiefangbao" target="_blank">
+            <div class="channel-name"><span class="telegram-icon">📱</span>中国工人解放报</div>
+            <div class="channel-link">https://t.me/s/zhongguogongrenjiefangbao</div>
+        </a>
+    </div>
+
+    <div class="channel">
+        <a href="https://t.me/s/unity2025cn" target="_blank">
+            <div class="channel-name"><span class="telegram-icon">📱</span>联合发布处</div>
+            <div class="channel-link">https://t.me/s/unity2025cn</div>
+        </a>
+    </div>
+
+    <div class="channel">
+        <a href="https://t.me/s/vorwarts_2023" target="_blank">
+            <div class="channel-name"><span class="telegram-icon">📱</span>前进报</div>
+            <div class="channel-link">https://t.me/s/vorwarts_2023</div>
+        </a>
+    </div>
+
+    <div class="channel">
+        <a href="https://t.me/s/YeHuoVideo" target="_blank">
+            <div class="channel-name"><span class="telegram-icon">📱</span>野火央视频道</div>
+            <div class="channel-link">https://t.me/s/YeHuoVideo</div>
+        </a>
+    </div>
+
+    <div class="channel">
+        <a href="https://t.me/s/gong_ge_news" target="_blank">
+            <div class="channel-name"><span class="telegram-icon">📱</span>工革报发布处</div>
+            <div class="channel-link">https://t.me/s/gong_ge_news</div>
+        </a>
+    </div>
+
+    <div class="channel">
+        <a href="https://t.me/s/journaldelutteenfr" target="_blank">
+            <div class="channel-name"><span class="telegram-icon">📱</span>夺权之路报</div>
+            <div class="channel-link">https://t.me/s/journaldelutteenfr</div>
+        </a>
+    </div>
+
+</div>
+</body>
+</html>
