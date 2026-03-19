@@ -3,6 +3,9 @@ self.addEventListener('install', e => {
     caches.open('app-cache').then(cache => {
       return cache.addAll([
         '/',
+        '/blog.html',
+        '/meteor.html',
+        '/txt.html',
         '/index.html'
       ]);
     })
