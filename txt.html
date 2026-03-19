@@ -622,7 +622,16 @@
     }, 300);
 
     /* =========================================================
-       3. 分页状态
+       3. HTML解码工具函数
+    ========================================================= */
+    function decodeHTML(html) {
+      const txt = document.createElement("textarea");
+      txt.innerHTML = html;
+      return txt.value;
+    }
+
+    /* =========================================================
+       4. 分页状态
     ========================================================= */
     const PAGE_SIZE  = 6;   // 每页显示篇数（可按需调整）
     let   allArticles = []; // 全量文章缓存
@@ -630,7 +639,7 @@
     const articleContents = {}; // 缓存已加载的文章内容
 
     /* =========================================================
-       4. WriteFreely RSS 读取（逻辑保持原样，去掉 i<5 限制）
+       5. WriteFreely RSS 读取（使用正确的 content:encoded 字段）
     ========================================================= */
     fetch("https://paper.wf/meteor/feed/")
       .then(r => r.text())
@@ -645,20 +654,24 @@
             String(date.getMonth() + 1).padStart(2, "0") + "-" +
             String(date.getDate()).padStart(2, "0");
 
-          /* 摘要：从 description 提取纯文本,取前 120 字 */
-          const descNode = el.querySelector("description");
+          // ✅ 关键修复：优先使用 content:encoded，回退到 description
+          const contentNode = el.querySelector("content\\:encoded") || 
+                             el.querySelector("encoded") ||
+                             el.querySelector("description");
+          
           let summary = "";
           let fullContent = "";
-          if (descNode) {
-            // 保存完整的HTML内容用于展开显示
-            fullContent = descNode.textContent || "";
+          
+          if (contentNode) {
+            // 保存完整的HTML内容（可能是转义的）
+            fullContent = contentNode.textContent || "";
             
             // 提取纯文本用于摘要
-            const plain = (descNode.textContent || "")
-              .replace(/<[^>]*>/g, "")
-              .replace(/&nbsp;/g, " ").replace(/&amp;/g, "&")
-              .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-              .replace(/&quot;/g, '"').replace(/\s+/g, " ").trim();
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = decodeHTML(fullContent);
+            const plain = tempDiv.textContent
+              .replace(/\s+/g, " ")
+              .trim();
             summary = plain.length > 120 ? plain.slice(0, 120) + "…" : plain;
           }
 
@@ -681,7 +694,7 @@
       });
 
     /* =========================================================
-       5. 渲染指定页
+       6. 渲染指定页
     ========================================================= */
     function renderPage(page) {
       const totalPages = Math.ceil(allArticles.length / PAGE_SIZE);
@@ -700,7 +713,7 @@
         let html = "";
 
         slice.forEach((a, i) => {
-          const globalIdx = start + i + 1;           // 全局序号，无上限
+          const globalIdx = start + i + 1;
           const delay     = (i * 0.07).toFixed(2) + "s";
           const cardId    = `card-${globalIdx}`;
           html += `
@@ -759,7 +772,7 @@
     }
 
     /* =========================================================
-       6. 卡片展开/收起逻辑
+       7. 卡片展开/收起逻辑
     ========================================================= */
     function toggleCard(cardEl, index, link, fullContent) {
       const isExpanded = cardEl.classList.contains('expanded');
@@ -789,68 +802,90 @@
     }
 
     /* =========================================================
-       7. 加载文章内容
+       8. 加载文章内容（核心修复）
     ========================================================= */
     function loadArticleContent(index, link, fullContent) {
       const contentEl = document.getElementById(`content-${index}`);
       
-      // 如果有RSS中的内容，需要先清理
+      // ✅ 如果有RSS中的内容，先解码再清理
       if (fullContent && fullContent.trim().length > 0) {
-        // 创建临时容器来解析HTML
+        // 1. 解码HTML转义字符
+        const decodedHTML = decodeHTML(fullContent);
+        
+        // 2. 创建临时容器来解析和清理HTML
         const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = fullContent;
+        tempDiv.innerHTML = decodedHTML;
         
-        // 移除所有不需要的元素
-        tempDiv.querySelectorAll('script, style, nav, header, footer').forEach(el => el.remove());
+        // 3. 尝试定位文章主体
+        let articleBody = 
+          tempDiv.querySelector('#post-body') ||
+          tempDiv.querySelector('article') ||
+          tempDiv.querySelector('.e-content') ||
+          tempDiv.querySelector('.post-content') ||
+          tempDiv;
         
-        // 移除按钮类元素
-        tempDiv.querySelectorAll('button, .menu-btn, #menuBtn, #aiBtn, .sidebar').forEach(el => el.remove());
-        tempDiv.querySelectorAll('[id*="Btn"], [class*="btn"]').forEach(el => el.remove());
+        // 4. 移除所有UI控件和装饰元素
+        articleBody.querySelectorAll('script, style, nav, header, footer, aside').forEach(el => el.remove());
+        articleBody.querySelectorAll('canvas, svg').forEach(el => el.remove());
         
-        // 移除canvas
-        tempDiv.querySelectorAll('canvas').forEach(el => el.remove());
-        
-        // 移除背景装饰
-        tempDiv.querySelectorAll('.flag-bg, [class*="bg"]').forEach(el => {
-          if (!el.textContent.trim()) el.remove();
+        // 移除所有按钮和菜单
+        articleBody.querySelectorAll('button').forEach(el => el.remove());
+        articleBody.querySelectorAll('*').forEach(el => {
+          const id = el.id || '';
+          const className = el.className || '';
+          // 移除任何包含按钮、菜单、侧边栏相关的ID或class的元素
+          if (
+            id.toLowerCase().includes('btn') ||
+            id.toLowerCase().includes('menu') ||
+            id.toLowerCase().includes('sidebar') ||
+            id.toLowerCase().includes('nav') ||
+            className.toString().toLowerCase().includes('btn') ||
+            className.toString().toLowerCase().includes('menu') ||
+            className.toString().toLowerCase().includes('sidebar') ||
+            className.toString().toLowerCase().includes('nav') ||
+            className.toString().toLowerCase().includes('flag')
+          ) {
+            el.remove();
+          }
         });
         
-        // 移除所有图片（除非它们在文章内容中）
-        tempDiv.querySelectorAll('img').forEach(img => {
+        // 5. 移除标题（已在卡片中显示）
+        articleBody.querySelectorAll('h1').forEach(el => el.remove());
+        
+        // 6. 处理图片 - 只保留有效的内容图片
+        articleBody.querySelectorAll('img').forEach(img => {
           const src = img.getAttribute('src') || '';
           const alt = img.getAttribute('alt') || '';
-          // 如果是装饰性图片、logo或不在文章域名下的图片，移除
-          if (!src || src.includes('logo') || src.includes('icon') || 
-              (!src.startsWith('http') && !src.startsWith('/')) ||
-              (src.startsWith('http') && !src.includes('paper.wf'))) {
+          // 移除装饰性图片、logo、icon等
+          if (
+            !src ||
+            src.includes('logo') ||
+            src.includes('icon') ||
+            src.includes('avatar') ||
+            alt.toLowerCase().includes('logo') ||
+            alt.toLowerCase().includes('icon')
+          ) {
             img.remove();
           }
         });
         
-        // 移除SVG
-        tempDiv.querySelectorAll('svg').forEach(el => el.remove());
-        
-        // 移除标题（已在卡片中显示）
-        tempDiv.querySelectorAll('h1').forEach(el => el.remove());
-        
-        // 移除空的div
-        tempDiv.querySelectorAll('div').forEach(div => {
-          if (!div.textContent.trim() && !div.querySelector('img')) {
-            div.remove();
+        // 7. 移除空元素
+        articleBody.querySelectorAll('div, p, span').forEach(el => {
+          if (!el.textContent.trim() && !el.querySelector('img, video, iframe')) {
+            el.remove();
           }
         });
         
-        // 获取清理后的内容
-        let cleanedHTML = tempDiv.innerHTML.trim();
+        // 8. 获取清理后的内容
+        let cleanedHTML = articleBody.innerHTML.trim();
         
-        // 如果清理后内容太短，说明提取失败
+        // 9. 如果清理后内容太短，尝试fetch文章页面
         if (cleanedHTML.length < 50) {
-          // 尝试直接fetch文章页面
           fetchArticlePage(index, link, contentEl);
           return;
         }
         
-        // 缓存并显示内容
+        // 10. 缓存并显示内容
         articleContents[index] = cleanedHTML;
         contentEl.innerHTML = cleanedHTML;
         return;
@@ -861,46 +896,36 @@
     }
     
     /* =========================================================
-       8. 从文章页面获取内容（备用方法）
+       9. 从文章页面获取内容（备用方法）
     ========================================================= */
     function fetchArticlePage(index, link, contentEl) {
       fetch(link)
         .then(response => response.text())
         .then(html => {
-          // 解析HTML
           const parser = new DOMParser();
           const doc = parser.parseFromString(html, 'text/html');
           
-          // WriteFreely的文章内容通常在 id="post-body" 的元素中
-          let content = doc.querySelector('#post-body');
-          
-          // 如果没找到，尝试其他选择器
-          if (!content) {
-            content = doc.querySelector('article .e-content') || 
-                     doc.querySelector('.e-content') ||
-                     doc.querySelector('article');
-          }
+          // WriteFreely的文章内容
+          let content = 
+            doc.querySelector('#post-body') ||
+            doc.querySelector('article .e-content') ||
+            doc.querySelector('.e-content') ||
+            doc.querySelector('article');
           
           if (content) {
-            // 克隆内容
             const contentClone = content.cloneNode(true);
             
-            // 移除标题
+            // 清理
             contentClone.querySelectorAll('h1, h2.post-title').forEach(el => el.remove());
-            
-            // 移除导航等
             contentClone.querySelectorAll('nav, header, footer, script, style').forEach(el => el.remove());
             
-            // 获取处理后的HTML
             let processedHTML = contentClone.innerHTML.trim();
             
-            // 如果内容太短，显示错误
             if (processedHTML.length < 50) {
               contentEl.innerHTML = '<div class="content-error">★ 无法正确加载文章内容，请点击"阅读全文"查看完整文章 ★</div>';
               return;
             }
             
-            // 缓存并显示
             articleContents[index] = processedHTML;
             contentEl.innerHTML = processedHTML;
           } else {
@@ -914,9 +939,7 @@
     }
 
     /* =========================================================
-       9. 分页控件渲染
-          · 总页数 ≤ 7 → 显示全部页码
-          · 总页数 > 7 → 首尾各 1，当前页两侧各 1，其余省略号
+       10. 分页控件渲染
     ========================================================= */
     function renderPagination(cur, total) {
       const el = document.getElementById("pagination");
@@ -927,7 +950,6 @@
         return;
       }
 
-      /* 生成页码序列 */
       let pages = [];
       if (total <= 7) {
         for (let i = 1; i <= total; i++) pages.push(i);
@@ -965,14 +987,14 @@
     }
 
     /* =========================================================
-       10. AI 按钮
+       11. AI 按钮
     ========================================================= */
     document.getElementById("aiBtn").addEventListener("click", () => {
       window.open("https://huggingface.co/spaces/rofg2/rotai", "_blank");
     });
 
     /* =========================================================
-       11. 火流星特效（持续 15 秒）
+       12. 火流星特效（持续 15 秒）
     ========================================================= */
     (function () {
       const canvas = document.getElementById("meteorCanvas");
@@ -1057,4 +1079,4 @@
     })();
   </script>
 </body>
-</html>
+  </html>
