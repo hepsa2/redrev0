@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按钮测试</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #b30000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #8b0000;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 按钮功能测试</h1>
+    
+    <div class="result" id="result">等待测试...</div>
+    
+    <h3>测试1: 直接弹窗</h3>
+    <button onclick="alert('按钮点击有效！')">点我测试</button>
+    
+    <h3>测试2: 显示模态框</h3>
+    <button onclick="testModal()">打开模态框</button>
+    
+    <h3>测试3: 完整登录框</h3>
+    <button onclick="showLogin()">显示登录框</button>
+    <button onclick="showSignup()">显示注册框</button>
+    
+    <!-- 测试模态框 -->
+    <div id="testModal" class="modal">
+        <div class="modal-content">
+            <h2>测试模态框</h2>
+            <p>如果你能看到这个，说明模态框工作正常！</p>
+            <button onclick="closeTestModal()">关闭</button>
+        </div>
+    </div>
+    
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>登录</h2>
+            <form onsubmit="testLogin(event)">
+                <div style="margin: 15px 0;">
+                    <label style="display: block; margin-bottom: 5px;">邮箱</label>
+                    <input type="email" id="loginEmail" required placeholder="your@email.com" 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <div style="margin: 15px 0;">
+                    <label style="display: block; margin-bottom: 5px;">密码</label>
+                    <input type="password" id="loginPassword" required placeholder="密码" 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <button type="submit" style="width: 100%; margin-top: 10px;">登录</button>
+                <button type="button" onclick="closeLogin()" style="width: 100%; margin-top: 10px; background: #666;">取消</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 注册模态框 -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <h2>注册</h2>
+            <form onsubmit="testSignup(event)">
+                <div style="margin: 15px 0;">
+                    <label style="display: block; margin-bottom: 5px;">邮箱</label>
+                    <input type="email" id="signupEmail" required placeholder="your@email.com" 
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <div style="margin: 15px 0;">
+                    <label style="display: block; margin-bottom: 5px;">密码</label>
+                    <input type="password" id="signupPassword" required placeholder="至少6位" minlength="6"
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <div style="margin: 15px 0;">
+                    <label style="display: block; margin-bottom: 5px;">确认密码</label>
+                    <input type="password" id="signupPasswordConfirm" required placeholder="再次输入" minlength="6"
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <button type="submit" style="width: 100%; margin-top: 10px;">注册</button>
+                <button type="button" onclick="closeSignup()" style="width: 100%; margin-top: 10px; background: #666;">取消</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        let supabase;
+        const result = document.getElementById('result');
+        
+        // 初始化 Supabase
+        window.addEventListener('DOMContentLoaded', function() {
+            try {
+                supabase = window.supabase.createClient(
+                    'https://dlzmdgbpvvsuvhkxxctr.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsem1kZ2JwdnZzdXZoa3h4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5ODkxNDQsImV4cCI6MjA4OTU2NTE0NH0.8c5HPCsCGhrW3nuzhUzOZVJTus2-qw5TQb90WnRiFQ8'
+                );
+                result.innerHTML = '✅ Supabase 初始化成功，可以开始测试';
+                console.log('Supabase 初始化成功');
+            } catch (error) {
+                result.innerHTML = '❌ Supabase 初始化失败: ' + error.message;
+                console.error('初始化失败:', error);
+            }
+        });
+        
+        // 测试模态框
+        function testModal() {
+            console.log('testModal 函数被调用');
+            document.getElementById('testModal').classList.add('active');
+            result.innerHTML = '✅ testModal 函数执行成功';
+        }
+        
+        function closeTestModal() {
+            document.getElementById('testModal').classList.remove('active');
+        }
+        
+        // 显示登录框
+        function showLogin() {
+            console.log('showLogin 函数被调用');
+            document.getElementById('loginModal').classList.add('active');
+            result.innerHTML = '✅ showLogin 函数执行成功';
+        }
+        
+        function closeLogin() {
+            document.getElementById('loginModal').classList.remove('active');
+        }
+        
+        // 显示注册框
+        function showSignup() {
+            console.log('showSignup 函数被调用');
+            document.getElementById('signupModal').classList.add('active');
+            result.innerHTML = '✅ showSignup 函数执行成功';
+        }
+        
+        function closeSignup() {
+            document.getElementById('signupModal').classList.remove('active');
+        }
+        
+        // 测试登录
+        async function testLogin(e) {
+            e.preventDefault();
+            console.log('testLogin 函数被调用');
+            result.innerHTML = '⏳ 正在登录...';
+            
+            try {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                console.log('尝试登录:', email);
+                
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    result.innerHTML = '❌ 登录失败: ' + error.message;
+                    alert('登录失败: ' + error.message);
+                } else {
+                    result.innerHTML = '✅ 登录成功！用户: ' + email;
+                    alert('登录成功！');
+                    closeLogin();
+                }
+            } catch (error) {
+                result.innerHTML = '❌ 登录异常: ' + error.message;
+                console.error('登录异常:', error);
+            }
+        }
+        
+        // 测试注册
+        async function testSignup(e) {
+            e.preventDefault();
+            console.log('testSignup 函数被调用');
+            result.innerHTML = '⏳ 正在注册...';
+            
+            try {
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('signupPasswordConfirm').value;
+                
+                if (password !== confirmPassword) {
+                    alert('两次密码输入不一致');
+                    result.innerHTML = '❌ 两次密码输入不一致';
+                    return;
+                }
+                
+                console.log('尝试注册:', email);
+                
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    result.innerHTML = '❌ 注册失败: ' + error.message;
+                    alert('注册失败: ' + error.message);
+                } else {
+                    result.innerHTML = '✅ 注册成功！请检查邮箱: ' + email;
+                    alert('注册成功！请检查邮箱验证链接');
+                    closeSignup();
+                }
+            } catch (error) {
+                result.innerHTML = '❌ 注册异常: ' + error.message;
+                console.error('注册异常:', error);
+            }
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+        
+        // 监听所有按钮点击
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'BUTTON') {
+                console.log('按钮被点击:', e.target.textContent);
+            }
+        });
+    </script>
+</body>
+  </html>
