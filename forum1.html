@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>红星论坛</title>
+    <style>
+        :root {
+            --red: #b30000;
+            --lightred: #ffd6d6;
+            --darkred: #8b0000;
+            --white: #ffffff;
+            --bg-light: #fff5f5;
+            --shadow: 0 6px 16px rgba(0,0,0,0.15);
+            --radius: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--lightred);
+            color: #222;
+            font-family: "Noto Sans SC", system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+
+        .star-bg {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 120vw;
+            color: #ffd700;
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .navbar {
+            background: var(--red);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar h1::before {
+            content: "★";
+            color: #ffd700;
+        }
+
+        .auth-buttons button {
+            background: white;
+            color: var(--red);
+            border: none;
+            padding: 8px 20px;
+            margin-left: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .auth-buttons button:hover {
+            background: var(--lightred);
+            transform: translateY(-2px);
+        }
+
+        .user-info {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .sidebar-section h3 {
+            color: var(--darkred);
+            margin-bottom: 15px;
+            font-size: 16px;
+            border-bottom: 2px solid var(--lightred);
+            padding-bottom: 10px;
+        }
+
+        .category-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: var(--bg-light);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .category-item:hover {
+            background: var(--lightred);
+            border-left-color: var(--red);
+            transform: translateX(5px);
+        }
+
+        .category-item.active {
+            background: var(--lightred);
+            border-left-color: var(--red);
+            font-weight: bold;
+        }
+
+        .category-name {
+            font-size: 15px;
+            color: #333;
+            display: block;
+        }
+
+        .category-desc {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .main-content {
+            min-height: 60vh;
+        }
+
+        .content-header {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .content-header h2 {
+            color: var(--darkred);
+            font-size: 22px;
+        }
+
+        .new-post-btn {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .new-post-btn:hover {
+            background: var(--darkred);
+            transform: translateY(-2px);
+        }
+
+        .new-post-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .post-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border-left-color: var(--red);
+        }
+
+        .post-card.pinned {
+            border-left-color: #ffd700;
+            background: linear-gradient(to right, #fffbf0, white);
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .post-card.pinned .post-title::before {
+            content: "📌 ";
+        }
+
+        .post-meta {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .post-author {
+            color: var(--red);
+            font-weight: 500;
+        }
+
+        .post-content-preview {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 10px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--lightred);
+        }
+
+        .modal-header h3 {
+            color: var(--darkred);
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .close-btn:hover {
+            color: var(--red);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--red);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--red);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: var(--darkred);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 2000;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast.active {
+            display: block;
+        }
+
+        .toast.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--red);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+                order: 2;
+            }
+
+            .navbar h1 {
+                font-size: 18px;
+            }
+
+            .content-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .new-post-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="star-bg">★</div>
+
+    <nav class="navbar">
+        <div class="container">
+            <h1>红星论坛</h1>
+            <div id="authSection" class="auth-buttons">
+                <button onclick="showLoginModal()">登录</button>
+                <button onclick="showSignupModal()">注册</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3>📚 板块分类</h3>
+                <div id="categoryList">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>ℹ️ 论坛信息</h3>
+                <div style="font-size: 13px; color: #666; line-height: 1.6;">
+                    <p style="margin-bottom: 8px;">欢迎来到红星论坛</p>
+                    <p>共同讨论，交流学习</p>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div id="listView">
+                <div class="content-header">
+                    <h2 id="viewTitle">全部帖子</h2>
+                    <button class="new-post-btn" onclick="showNewPostModal()" id="newPostBtn" disabled>
+                        ✏️ 发表新帖
+                    </button>
+                </div>
+                <div id="postList" class="post-list">
+                    <div class="loading">加载帖子中...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>登录</h3>
+                <button class="close-btn" onclick="closeModal('loginModal')">&times;</button>
+            </div>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="loginEmail" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="loginPassword" required placeholder="至少6位密码">
+                </div>
+                <button type="submit" class="submit-btn">登录</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>注册新账号</h3>
+                <button class="close-btn" onclick="closeModal('signupModal')">&times;</button>
+            </div>
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="signupEmail" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="signupPassword" required placeholder="至少6位密码" minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>确认密码</label>
+                    <input type="password" id="signupPasswordConfirm" required placeholder="再次输入密码" minlength="6">
+                </div>
+                <button type="submit" class="submit-btn">注册</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 发帖模态框 -->
+    <div id="newPostModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>发表新帖</h3>
+                <button class="close-btn" onclick="closeModal('newPostModal')">&times;</button>
+            </div>
+            <form onsubmit="handleNewPost(event)">
+                <div class="form-group">
+                    <label>选择板块</label>
+                    <select id="postCategory" required>
+                        <option value="">请选择...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" id="postTitle" required placeholder="输入帖子标题" maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label>内容</label>
+                    <textarea id="postContent" required placeholder="分享你的想法..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">发布</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- 先加载 Supabase 库，然后再执行初始化代码 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 全局变量
+        let supabase;
+        let currentUser = null;
+        let categories = [];
+        let currentCategoryId = null;
+
+        // 等待 DOM 和 Supabase 都加载完成
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM 加载完成，初始化 Supabase...');
+            
+            // 初始化 Supabase
+            try {
+                supabase = window.supabase.createClient(
+                    'https://dlzmdgbpvvsuvhkxxctr.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsem1kZ2JwdnZzdXZoa3h4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5ODkxNDQsImV4cCI6MjA4OTU2NTE0NH0.8c5HPCsCGhrW3nuzhUzOZVJTus2-qw5TQb90WnRiFQ8'
+                );
+                console.log('Supabase 初始化成功');
+                
+                // 开始初始化应用
+                init();
+            } catch (error) {
+                console.error('Supabase 初始化失败:', error);
+                showToast('初始化失败，请刷新页面', 'error');
+            }
+        });
+
+        // 初始化应用
+        async function init() {
+            console.log('开始初始化应用...');
+            try {
+                await checkAuth();
+                await loadCategories();
+                await loadPosts();
+                console.log('应用初始化完成');
+            } catch (error) {
+                console.error('初始化失败:', error);
+                showToast('加载失败，请刷新页面', 'error');
+            }
+        }
+
+        // 检查认证状态
+        async function checkAuth() {
+            try {
+                const { data: { user }, error } = await supabase.auth.getUser();
+                if (error) throw error;
+                currentUser = user;
+                updateAuthUI();
+            } catch (error) {
+                console.error('认证检查失败:', error);
+            }
+        }
+
+        // 更新认证界面
+        function updateAuthUI() {
+            const authSection = document.getElementById('authSection');
+            const newPostBtn = document.getElementById('newPostBtn');
+            
+            if (currentUser) {
+                authSection.innerHTML = `
+                    <div class="user-info">
+                        <span>👤 ${currentUser.email}</span>
+                        <button onclick="handleLogout()">退出</button>
+                    </div>
+                `;
+                newPostBtn.disabled = false;
+            } else {
+                authSection.innerHTML = `
+                    <button onclick="showLoginModal()">登录</button>
+                    <button onclick="showSignupModal()">注册</button>
+                `;
+                newPostBtn.disabled = true;
+            }
+        }
+
+        // 加载板块
+        async function loadCategories() {
+            try {
+                const { data, error } = await supabase
+                    .from('categories')
+                    .select('*')
+                    .order('created_at');
+
+                if (error) throw error;
+
+                categories = data || [];
+                renderCategories();
+                updateCategorySelect();
+            } catch (error) {
+                console.error('加载板块失败:', error);
+                document.getElementById('categoryList').innerHTML = 
+                    '<div style="color:#999;">加载失败</div>';
+            }
+        }
+
+        // 渲染板块列表
+        function renderCategories() {
+            const container = document.getElementById('categoryList');
+            
+            if (categories.length === 0) {
+                container.innerHTML = '<div style="color:#999; font-size:13px;">暂无板块</div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="category-item ${!currentCategoryId ? 'active' : ''}" onclick="filterByCategory(null)">
+                    <span class="category-name">🏠 全部帖子</span>
+                </div>
+                ${categories.map(cat => `
+                    <div class="category-item ${currentCategoryId === cat.id ? 'active' : ''}" 
+                         onclick="filterByCategory('${cat.id}')">
+                        <span class="category-name">${escapeHtml(cat.name)}</span>
+                        <span class="category-desc">${escapeHtml(cat.description || '')}</span>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // 更新发帖板块选择
+        function updateCategorySelect() {
+            const select = document.getElementById('postCategory');
+            select.innerHTML = `
+                <option value="">请选择...</option>
+                ${categories.map(cat => `
+                    <option value="${cat.id}">${escapeHtml(cat.name)}</option>
+                `).join('')}
+            `;
+        }
+
+        // 按板块筛选
+        function filterByCategory(categoryId) {
+            currentCategoryId = categoryId;
+            renderCategories();
+            loadPosts();
+            
+            const title = document.getElementById('viewTitle');
+            if (categoryId) {
+                const cat = categories.find(c => c.id === categoryId);
+                title.textContent = cat ? cat.name : '全部帖子';
+            } else {
+                title.textContent = '全部帖子';
+            }
+        }
+
+        // 加载帖子
+        async function loadPosts() {
+            const container = document.getElementById('postList');
+            container.innerHTML = '<div class="loading">加载中...</div>';
+
+            try {
+                let query = supabase
+                    .from('posts')
+                    .select(`
+                        *,
+                        profiles:author_id(username),
+                        categories(name)
+                    `)
+                    .order('is_pinned', { ascending: false })
+                    .order('created_at', { ascending: false });
+
+                if (currentCategoryId) {
+                    query = query.eq('category_id', currentCategoryId);
+                }
+
+                const { data, error } = await query;
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>暂无帖子</h3>
+                            <p style="color:#999; margin-top:10px;">
+                                ${currentUser ? '成为第一个发帖的人吧！' : '登录后即可发帖'}
+                            </p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                renderPosts(data);
+            } catch (error) {
+                console.error('加载帖子失败:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>加载失败</h3>
+                        <p style="color:#999; margin-top:10px;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 渲染帖子列表
+        function renderPosts(posts) {
+            const container = document.getElementById('postList');
+            container.innerHTML = posts.map(post => `
+                <div class="post-card ${post.is_pinned ? 'pinned' : ''}">
+                    <div class="post-title">${escapeHtml(post.title)}</div>
+                    <div class="post-meta">
+                        <span class="post-author">@${post.profiles?.username || '匿名'}</span>
+                        <span>📁 ${post.categories?.name || '未分类'}</span>
+                        <span>${formatDate(post.created_at)}</span>
+                    </div>
+                    <div class="post-content-preview">${escapeHtml(post.content)}</div>
+                    <div class="post-stats">
+                        <span>👁️ ${post.view_count || 0} 浏览</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 登录
+        async function handleLogin(e) {
+            e.preventDefault();
+            try {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+
+                const { error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) throw error;
+
+                showToast('登录成功！', 'success');
+                closeModal('loginModal');
+                await checkAuth();
+                loadPosts();
+            } catch (error) {
+                showToast('登录失败: ' + error.message, 'error');
+            }
+        }
+
+        // 注册
+        async function handleSignup(e) {
+            e.preventDefault();
+            try {
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('signupPasswordConfirm').value;
+
+                if (password !== confirmPassword) {
+                    showToast('两次密码输入不一致', 'error');
+                    return;
+                }
+
+                const { error } = await supabase.auth.signUp({
+                    email,
+                    password
+                });
+
+                if (error) throw error;
+
+                showToast('注册成功！请检查邮箱验证链接', 'success');
+                closeModal('signupModal');
+            } catch (error) {
+                showToast('注册失败: ' + error.message, 'error');
+            }
+        }
+
+        // 登出
+        async function handleLogout() {
+            try {
+                await supabase.auth.signOut();
+                showToast('已退出登录', 'success');
+                await checkAuth();
+                loadPosts();
+            } catch (error) {
+                showToast('退出失败: ' + error.message, 'error');
+            }
+        }
+
+        // 发帖
+        async function handleNewPost(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                showToast('请先登录', 'error');
+                return;
+            }
+
+            try {
+                const categoryId = document.getElementById('postCategory').value;
+                const title = document.getElementById('postTitle').value;
+                const content = document.getElementById('postContent').value;
+
+                const { error } = await supabase
+                    .from('posts')
+                    .insert([{
+                        category_id: categoryId,
+                        author_id: currentUser.id,
+                        title,
+                        content
+                    }]);
+
+                if (error) throw error;
+
+                showToast('发帖成功！', 'success');
+                closeModal('newPostModal');
+                document.getElementById('postTitle').value = '';
+                document.getElementById('postContent').value = '';
+                document.getElementById('postCategory').value = '';
+                await loadPosts();
+            } catch (error) {
+                showToast('发帖失败: ' + error.message, 'error');
+            }
+        }
+
+        // 模态框控制
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.add('active');
+        }
+
+        function showSignupModal() {
+            document.getElementById('signupModal').classList.add('active');
+        }
+
+        function showNewPostModal() {
+            if (!currentUser) {
+                showToast('请先登录', 'error');
+                return;
+            }
+            document.getElementById('newPostModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // 通知提示
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} active`;
+            
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // 工具函数
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return '刚刚';
+            if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+            if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+            if (diff < 604800000) return Math.floor(diff / 86400000) + '天前';
+            
+            return date.toLocaleDateString('zh-CN');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+  </html>
