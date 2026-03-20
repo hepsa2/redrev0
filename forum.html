@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>群众论坛</title>
+
+<style>
+:root{
+    --red:#b30000;
+    --lightred:#ffd6d6;
+}
+body{
+    margin:0;
+    background:var(--lightred);
+    color:#222;
+    font-family:"Noto Sans SC",system-ui;
+}
+.star-bg{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    font-size:120vw;
+    color:#ffd700;
+    opacity:0.08;
+    z-index:-1;
+}
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:30px 20px;
+}
+h1{text-align:center;color:#8b0000;}
+.section{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 6px 16px rgba(0,0,0,0.15);
+}
+input,textarea,button{
+    width:100%;
+    margin-top:10px;
+    padding:10px;
+    border-radius:6px;
+    border:1px solid #ccc;
+}
+button{
+    background:#b30000;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+button:hover{background:#8b0000;}
+.post{border-bottom:1px solid #eee;margin-bottom:15px;padding-bottom:10px;}
+.comment{margin-left:15px;font-size:14px;color:#444;}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+
+<body>
+<div class="star-bg">★</div>
+
+<div class="container">
+<h1>论坛</h1>
+
+<!-- 登录 -->
+<div class="section">
+<h2>用户登录 / 注册</h2>
+<input id="email" placeholder="邮箱">
+<input id="password" type="password" placeholder="密码">
+<button onclick="signUp()">注册</button>
+<button onclick="signIn()">登录</button>
+<p id="userInfo"></p>
+</div>
+
+<!-- 发帖 -->
+<div class="section">
+<h2>发帖</h2>
+<input id="title" placeholder="标题">
+<textarea id="content" placeholder="内容"></textarea>
+<button onclick="createPost()">发布</button>
+</div>
+
+<!-- 帖子 -->
+<div class="section">
+<h2>帖子列表</h2>
+<div id="posts"></div>
+</div>
+
+</div>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://dlzmdgbpvvsuvhkxxctr.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+);
+
+// 注册
+async function signUp(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const {error} = await supabase.auth.signUp({email,password});
+  alert(error ? error.message : "注册成功");
+}
+
+// 登录
+async function signIn(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const {error} = await supabase.auth.signInWithPassword({email,password});
+  alert(error ? error.message : "登录成功");
+  getUser();
+}
+
+// 当前用户
+async function getUser(){
+  const {data} = await supabase.auth.getUser();
+  document.getElementById("userInfo").innerText =
+    data.user ? "已登录："+data.user.email : "未登录";
+}
+
+// 发帖
+async function createPost(){
+  const {data} = await supabase.auth.getUser();
+  if(!data.user){alert("请先登录");return;}
+
+  const title = document.getElementById("title").value;
+  const content = document.getElementById("content").value;
+
+  await supabase.from("posts").insert({
+    title,content,user_id:data.user.id
+  });
+
+  loadPosts();
+}
+
+// 加载帖子
+async function loadPosts(){
+  const {data:posts} = await supabase
+    .from("posts")
+    .select("*")
+    .order("created_at",{ascending:false});
+
+  let html="";
+  for(let post of posts){
+    html+=`
+    <div class="post">
+      <strong>${post.title}</strong><br>
+      ${post.content}<br>
+      <button onclick="showComments('${post.id}')">查看评论</button>
+      <div id="c-${post.id}"></div>
+    </div>`;
+  }
+  document.getElementById("posts").innerHTML=html;
+}
+
+// 评论
+async function showComments(postId){
+  const {data:comments} = await supabase
+    .from("comments")
+    .select("*")
+    .eq("post_id",postId);
+
+  let html="";
+  for(let c of comments){
+    html+=`<div class="comment">- ${c.content}</div>`;
+  }
+
+  html+=`
+  <input id="input-${postId}" placeholder="写评论">
+  <button onclick="addComment('${postId}')">发送</button>
+  `;
+
+  document.getElementById("c-"+postId).innerHTML=html;
+}
+
+async function addComment(postId){
+  const {data} = await supabase.auth.getUser();
+  if(!data.user){alert("请登录");return;}
+
+  const content=document.getElementById("input-"+postId).value;
+
+  await supabase.from("comments").insert({
+    post_id:postId,
+    content,
+    user_id:data.user.id
+  });
+
+  showComments(postId);
+}
+
+// 初始化
+getUser();
+loadPosts();
+</script>
+
+</body>
+</html>
