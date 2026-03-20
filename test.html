@@ -3,281 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supabase 连接测试</title>
+    <title>基础测试</title>
     <style>
         body {
-            font-family: monospace;
+            font-family: Arial, sans-serif;
             padding: 20px;
-            background: #f5f5f5;
+            background: #f0f0f0;
         }
-        .test-box {
+        .box {
             background: white;
-            padding: 20px;
+            padding: 15px;
             margin: 10px 0;
             border-radius: 5px;
             border-left: 4px solid #ccc;
         }
-        .test-box.success {
-            border-left-color: #28a745;
-        }
-        .test-box.error {
-            border-left-color: #dc3545;
-        }
-        .test-box.warning {
-            border-left-color: #ffc107;
-        }
-        h1 { color: #333; }
+        .success { border-left-color: green; }
+        .error { border-left-color: red; }
         button {
             padding: 10px 20px;
             margin: 5px;
+            font-size: 16px;
             cursor: pointer;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-        button:hover { background: #0056b3; }
-        pre {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 3px;
-            overflow-x: auto;
         }
     </style>
 </head>
 <body>
-    <h1>🔍 Supabase 连接诊断工具</h1>
-    
-    <div id="results"></div>
-    
-    <div style="margin-top: 20px;">
-        <button onclick="runTest1()">测试1: Supabase 库加载</button>
-        <button onclick="runTest2()">测试2: 客户端初始化</button>
-        <button onclick="runTest3()">测试3: 读取板块</button>
-        <button onclick="runTest4()">测试4: 读取帖子</button>
-        <button onclick="runAllTests()">运行所有测试</button>
+    <h1>基础功能测试</h1>
+    <div id="output">
+        <div class="box">等待测试...</div>
     </div>
-
-    <!-- 先加载 Supabase 库 -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <button onclick="test1()">测试1: 点击是否有效</button>
+    <button onclick="test2()">测试2: 加载 Supabase</button>
     
     <script>
-        const results = document.getElementById('results');
+        // 先测试最基本的功能
+        console.log('脚本已加载');
         
-        function addResult(title, message, status = 'success', details = null) {
-            const box = document.createElement('div');
-            box.className = `test-box ${status}`;
-            box.innerHTML = `
-                <h3>${status === 'success' ? '✅' : status === 'error' ? '❌' : '⚠️'} ${title}</h3>
-                <p>${message}</p>
-                ${details ? `<pre>${details}</pre>` : ''}
-            `;
-            results.appendChild(box);
+        function test1() {
+            alert('JavaScript 工作正常！按钮点击有效！');
+            document.getElementById('output').innerHTML = '<div class="box success">✅ 测试1通过：JavaScript 正常工作</div>';
         }
-
-        // 测试1: 检查 Supabase 库是否加载
-        function runTest1() {
-            results.innerHTML = '';
-            console.log('开始测试1: Supabase 库加载');
+        
+        function test2() {
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="box">正在加载 Supabase 库...</div>';
             
-            if (typeof window.supabase === 'undefined') {
-                addResult('测试1: Supabase 库加载', '失败！window.supabase 未定义', 'error', 
-                    '可能原因：\n1. CDN 被墙或无法访问\n2. 网络连接问题\n3. 脚本加载顺序错误');
-                return false;
-            }
-            
-            if (typeof window.supabase.createClient !== 'function') {
-                addResult('测试1: Supabase 库加载', 'window.supabase 存在但没有 createClient 方法', 'error');
-                return false;
-            }
-            
-            addResult('测试1: Supabase 库加载', '成功！Supabase 库已正确加载', 'success',
-                'window.supabase.createClient 方法可用');
-            return true;
+            // 动态加载 Supabase
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+            script.onload = function() {
+                output.innerHTML = '<div class="box success">✅ Supabase 库加载成功！</div>';
+                test3();
+            };
+            script.onerror = function() {
+                output.innerHTML = '<div class="box error">❌ Supabase 库加载失败！<br>可能原因：网络问题、CDN被墙</div>';
+            };
+            document.head.appendChild(script);
         }
-
-        // 测试2: 初始化 Supabase 客户端
-        let supabase;
-        function runTest2() {
-            if (!runTest1()) return false;
-            
-            console.log('开始测试2: 客户端初始化');
+        
+        function test3() {
+            const output = document.getElementById('output');
             
             try {
-                const SUPABASE_URL = 'https://dlzmdgbpvvsuvhkxxctr.supabase.co';
-                const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsem1kZ2JwdnZzdXZoa3h4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5ODkxNDQsImV4cCI6MjA4OTU2NTE0NH0.8c5HPCsCGhrW3nuzhUzOZVJTus2-qw5TQb90WnRiFQ8';
+                const supabase = window.supabase.createClient(
+                    'https://dlzmdgbpvvsuvhkxxctr.supabase.co',
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsem1kZ2JwdnZzdXZoa3h4Y3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5ODkxNDQsImV4cCI6MjA4OTU2NTE0NH0.8c5HPCsCGhrW3nuzhUzOZVJTus2-qw5TQb90WnRiFQ8'
+                );
                 
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                output.innerHTML += '<div class="box success">✅ Supabase 客户端初始化成功！</div>';
                 
-                if (!supabase) {
-                    addResult('测试2: 客户端初始化', '失败！createClient 返回 null 或 undefined', 'error');
-                    return false;
-                }
-                
-                addResult('测试2: 客户端初始化', '成功！Supabase 客户端已创建', 'success',
-                    `URL: ${SUPABASE_URL}\nKey: ${SUPABASE_ANON_KEY.substring(0, 50)}...`);
-                return true;
+                // 测试数据库连接
+                test4(supabase);
             } catch (error) {
-                addResult('测试2: 客户端初始化', '异常！' + error.message, 'error', error.stack);
-                return false;
+                output.innerHTML += '<div class="box error">❌ 初始化失败：' + error.message + '</div>';
             }
         }
-
-        // 测试3: 读取板块数据
-        async function runTest3() {
-            if (!runTest2()) return false;
-            
-            console.log('开始测试3: 读取板块');
+        
+        async function test4(supabase) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<div class="box">正在连接数据库...</div>';
             
             try {
-                addResult('测试3: 读取板块', '正在查询 categories 表...', 'warning');
-                
                 const { data, error } = await supabase
                     .from('categories')
-                    .select('*')
-                    .order('created_at');
+                    .select('*');
                 
                 if (error) {
-                    addResult('测试3: 读取板块', '失败！数据库查询错误', 'error',
-                        `错误代码: ${error.code}\n错误信息: ${error.message}\n详细: ${error.hint || '无'}\n\n可能原因：\n1. categories 表不存在（运行建表 SQL）\n2. RLS 策略阻止读取（检查策略）\n3. 表结构不匹配`);
-                    return false;
+                    output.innerHTML += '<div class="box error">❌ 数据库查询失败：<br>' + error.message + '<br><br>错误详情：<br>' + JSON.stringify(error, null, 2) + '</div>';
+                } else if (data) {
+                    output.innerHTML += '<div class="box success">✅ 数据库连接成功！<br>找到 ' + data.length + ' 个板块<br><pre>' + JSON.stringify(data, null, 2) + '</pre></div>';
                 }
-                
-                if (!data) {
-                    addResult('测试3: 读取板块', '警告！查询成功但返回 null', 'warning');
-                    return false;
-                }
-                
-                if (data.length === 0) {
-                    addResult('测试3: 读取板块', '成功但数据为空', 'warning',
-                        'categories 表存在但没有数据\n请运行插入示例板块的 SQL');
-                    return true;
-                }
-                
-                addResult('测试3: 读取板块', `成功！读取到 ${data.length} 个板块`, 'success',
-                    JSON.stringify(data, null, 2));
-                return true;
             } catch (error) {
-                addResult('测试3: 读取板块', '异常！' + error.message, 'error', error.stack);
-                return false;
+                output.innerHTML += '<div class="box error">❌ 异常：' + error.message + '</div>';
             }
         }
-
-        // 测试4: 读取帖子数据
-        async function runTest4() {
-            if (!runTest2()) return false;
-            
-            console.log('开始测试4: 读取帖子');
-            
-            try {
-                addResult('测试4: 读取帖子', '正在查询 posts 表...', 'warning');
-                
-                const { data, error } = await supabase
-                    .from('posts')
-                    .select(`
-                        *,
-                        profiles:author_id(username),
-                        categories(name)
-                    `)
-                    .order('created_at', { ascending: false });
-                
-                if (error) {
-                    addResult('测试4: 读取帖子', '失败！数据库查询错误', 'error',
-                        `错误代码: ${error.code}\n错误信息: ${error.message}\n详细: ${error.hint || '无'}\n\n可能原因：\n1. posts 表不存在\n2. profiles 表不存在\n3. 外键关系有问题\n4. RLS 策略阻止读取`);
-                    return false;
-                }
-                
-                if (!data) {
-                    addResult('测试4: 读取帖子', '警告！查询成功但返回 null', 'warning');
-                    return false;
-                }
-                
-                if (data.length === 0) {
-                    addResult('测试4: 读取帖子', '成功但数据为空', 'warning',
-                        'posts 表存在但没有数据（这是正常的，还没有人发帖）');
-                    return true;
-                }
-                
-                addResult('测试4: 读取帖子', `成功！读取到 ${data.length} 个帖子`, 'success',
-                    JSON.stringify(data.slice(0, 2), null, 2) + (data.length > 2 ? '\n\n...(更多帖子)' : ''));
-                return true;
-            } catch (error) {
-                addResult('测试4: 读取帖子', '异常！' + error.message, 'error', error.stack);
-                return false;
-            }
-        }
-
-        // 运行所有测试
-        async function runAllTests() {
-            results.innerHTML = '';
-            addResult('开始诊断', '正在运行所有测试...', 'warning');
-            
-            const test1 = runTest1();
-            if (!test1) {
-                addResult('诊断结束', '❌ Supabase 库加载失败，无法继续', 'error',
-                    '解决方法：\n1. 检查网络连接\n2. 尝试科学上网\n3. 或下载 Supabase 库到本地引用');
-                return;
-            }
-            
-            const test2 = runTest2();
-            if (!test2) {
-                addResult('诊断结束', '❌ Supabase 客户端初始化失败', 'error');
-                return;
-            }
-            
-            const test3 = await runTest3();
-            const test4 = await runTest4();
-            
-            if (test3 && test4) {
-                addResult('诊断结束', '✅ 所有测试通过！数据库连接正常', 'success',
-                    '你可以使用完整的论坛代码了');
-            } else if (test3 && !test4) {
-                addResult('诊断结束', '⚠️ 板块加载成功但帖子加载失败', 'warning',
-                    '可能是 posts 表或 profiles 表有问题\n请检查数据库表结构');
-            } else if (!test3) {
-                addResult('诊断结束', '❌ 板块加载失败', 'error',
-                    '最可能的原因：\n1. categories 表不存在\n2. RLS 策略配置错误\n\n请重新运行建表 SQL');
-            }
-        }
-
-        // 页面加载完成后自动运行测试
-        window.addEventListener('DOMContentLoaded', () => {
-            addResult('页面加载', 'DOM 已加载，点击按钮开始测试', 'warning');
-            console.log('页面已就绪，等待测试');
-            
-            // 自动运行所有测试
-            setTimeout(() => {
-                runAllTests();
-            }, 500);
-        });
+        
+        // 页面加载后显示提示
+        window.onload = function() {
+            console.log('页面加载完成');
+            document.getElementById('output').innerHTML = '<div class="box">✅ 页面已加载<br><br>请点击【测试1】确认按钮是否有效</div>';
+        };
     </script>
 </body>
 </html>
-```
-
-## 使用方法：
-
-1. **将这个测试页面保存为 `test.html`**
-2. **在浏览器打开它**
-3. **页面会自动运行所有测试**
-4. **根据测试结果判断问题：**
-
-### 可能的测试结果：
-
-**结果 A：测试1失败（Supabase 库加载失败）**
-```
-❌ 解决方法：
-1. 检查网络是否能访问 cdn.jsdelivr.net
-2. 尝试科学上网
-3. 或者下载 Supabase 库到本地
-```
-
-**结果 B：测试3失败（板块加载失败）**
-```
-❌ 错误信息会显示：relation "categories" does not exist
-解决方法：在 Supabase SQL Editor 重新运行建表 SQL
-```
-
-**结果 C：所有测试通过**
-```
-✅ 说明数据库完全正常，可以用回完整论坛代码
